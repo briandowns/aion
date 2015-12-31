@@ -13,15 +13,19 @@ import (
 	"github.com/goincremental/negroni-sessions"
 	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/gorilla/mux"
-	//"github.com/unrolled/render"
+	"github.com/unrolled/render"
 )
 
 // CLI flags
 var portFlag string
+var queueDriverFlag string
+var queueNameFlag string
 
 var signalsChan = make(chan os.Signal, 1)
 
 func init() {
+	flag.StringVar(&queueDriverFlag, "d", "nsq", "Queue backend driver to use.  Default NSQ")
+	flag.StringVar(&queueNameFlag, "q", "nsq", "Queue backend driver to use.  Default NSQ")
 	flag.StringVar(&portFlag, "p", ":8888", "port to run server on in :8888 format. Default 8888")
 }
 
@@ -40,7 +44,7 @@ func main() {
 	}()
 
 	// setup the renderer for returning our JSON
-	//ren := render.New(render.Options{})
+	ren := render.New(render.Options{})
 
 	store := cookiestore.New([]byte(uuid.NewUUID().String()))
 
@@ -58,6 +62,12 @@ func main() {
 
 	// Frontend Entry Point
 	router.HandleFunc(frontEnd, FrontendHandler()).Methods("GET")
+
+	// Jobs Route
+	router.HandleFunc(JobsPath, JobsRouteHandler(ren))
+
+	// Tasks Route
+	router.HandleFunc(TasksPath, TasksRouteHandler(ren))
 
 	n.UseHandler(router)
 	n.Run(portFlag)

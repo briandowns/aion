@@ -48,12 +48,12 @@ clean:
 	rm -rf bin/aion
 
 # build the backend
-build: clean get
+build: clean
 	$(GOBUILD) -v -race -o aion
 
 # run the backend unit tests
 test:
-	$(GOTEST) -v -cover gh.internal.shutterfly.com/shutterfly/aion
+	$(GOTEST) -v -cover github.com/briandowns/aion
 
 # check for git
 git:
