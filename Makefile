@@ -49,7 +49,7 @@ clean:
 
 # build the backend
 build: clean get
-	$(GOBUILD) -v -race -o docker/prod/aion
+	$(GOBUILD) -v -race -o aion
 
 # run the backend unit tests
 test:
