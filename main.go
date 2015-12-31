@@ -18,15 +18,14 @@ import (
 
 // CLI flags
 var portFlag string
-var queueDriverFlag string
-var queueNameFlag string
+var queueHostFlag string
+var setupFlag bool
 
 var signalsChan = make(chan os.Signal, 1)
 
 func init() {
-	flag.StringVar(&queueDriverFlag, "d", "nsq", "Queue backend driver to use.  Default NSQ")
-	flag.StringVar(&queueNameFlag, "q", "nsq", "Queue backend driver to use.  Default NSQ")
-	flag.StringVar(&portFlag, "p", ":8888", "port to run server on in :8888 format. Default 8888")
+	flag.StringVar(&queueHostFlag, "h", "", "NSQ server to connect to")
+	flag.StringVar(&portFlag, "p", ":9898", "port to run server on in :8888 format. Default 8888")
 }
 
 func main() {
@@ -42,6 +41,12 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
+	// run database setup if -s is provided at the CLI
+	if setupFlag {
+		// do some setup. ie create queues and topics
+		os.Exit(0)
+	}
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})

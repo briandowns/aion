@@ -13,9 +13,12 @@ var (
 )
 
 const (
-	APIBase   = "/api/v1/"
-	JobsPath  = APIBase + "jobs/"
-	TasksPath = JobsPath + "tasks/"
+	APIBase = "/api/v1/"
+)
+
+var (
+	JobsPath  = APIBase + "jobs"
+	TasksPath = JobsPath + "/tasks"
 )
 
 // FrontendHandler provides the handler for the main application
