@@ -17,17 +17,27 @@ import (
 )
 
 // CLI flags
-var portFlag string
-var queueHostFlag string
-var setupFlag bool
+var (
+	portFlag      string
+	queueHostFlag string
+	setupFlag     bool
+	dbUser        string
+	dbPass        string
+	dbHost        string
+	dbName        string
+)
 
 var jobRegistryChan = make(chan Job)
 var taskRegistryChan = make(chan Task)
 var signalsChan = make(chan os.Signal, 1)
 
 func init() {
-	flag.StringVar(&queueHostFlag, "h", "", "NSQ server to connect to")
-	flag.StringVar(&portFlag, "p", ":9898", "port to run server on in :8888 format. Default 8888")
+	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
+	flag.StringVar(&portFlag, "port", ":9898", "port to run the server")
+	flag.StringVar(&dbUser, "db-user", "aion", "database user")
+	flag.StringVar(&dbPass, "db-pass", "aion", "database pass")
+	flag.StringVar(&dbHost, "db-host", "aion", "database host")
+	flag.StringVar(&dbName, "db-name", "aion", "database name")
 }
 
 func main() {

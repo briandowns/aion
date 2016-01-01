@@ -38,6 +38,7 @@ get: git hg
 	$(GOGET) github.com/google/go-github/github
 	$(GOGET) github.com/robfig/cron
 	$(GOGET) github.com/gorhill/cronexpr
+	$(GOGET) github.com/jinzhu/gorm
 
 # build all and place the binary
 install: clean get

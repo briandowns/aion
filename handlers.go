@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.google.com/p/go-uuid/uuid"
-
 	"github.com/gorhill/cronexpr"
 	"github.com/unrolled/render"
 )
@@ -17,11 +15,13 @@ var (
 )
 
 const (
+	// APIBase is the base path for API access
 	APIBase = "/api/v1/"
-)
 
-var (
-	JobsPath  = APIBase + "jobs"
+	// JobsPath is the path to access jobs
+	JobsPath = APIBase + "jobs"
+
+	// TasksPath is the path to access tasks
 	TasksPath = JobsPath + "/tasks"
 )
 
@@ -56,8 +56,8 @@ func NewJobsRouteHandler(ren *render.Render) http.HandlerFunc {
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'name' field"})
 			return
 		}
-		nj.ID = uuid.NewUUID().String()
-		jobRegistryChan <- nj
+
+		jobRegistryChan <- nj // send the new job to the job worker
 		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
 	}
 }
@@ -93,13 +93,15 @@ func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'schedule' field"})
 			return
 		}
+
+		// validate that the entered cron string is valid.  Error if not.
 		_, err = cronexpr.Parse(nt.Schedule)
 		if err != nil {
 			ren.JSON(w, 400, map[string]string{"error": "invalid cron format"})
 			return
 		}
-		nt.ID = uuid.NewUUID().String()
-		taskRegistryChan <- nt
+
+		taskRegistryChan <- nt // send the new task to the task worker
 		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
 	}
 }
