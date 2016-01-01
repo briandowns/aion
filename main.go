@@ -21,6 +21,8 @@ var portFlag string
 var queueHostFlag string
 var setupFlag bool
 
+var jobRegistryChan = make(chan Job)
+var taskRegistryChan = make(chan Task)
 var signalsChan = make(chan os.Signal, 1)
 
 func init() {

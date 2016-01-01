@@ -7,6 +7,7 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 
+	"github.com/gorhill/cronexpr"
 	"github.com/unrolled/render"
 )
 
@@ -56,6 +57,7 @@ func NewJobsRouteHandler(ren *render.Render) http.HandlerFunc {
 			return
 		}
 		nj.ID = uuid.NewUUID().String()
+		jobRegistryChan <- nj
 		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
 	}
 }
@@ -79,6 +81,7 @@ func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
 			return
 		}
 		defer r.Body.Close()
+
 		switch {
 		case nt.Name == "":
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'name' field"})
@@ -90,7 +93,13 @@ func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'schedule' field"})
 			return
 		}
+		_, err = cronexpr.Parse(nt.Schedule)
+		if err != nil {
+			ren.JSON(w, 400, map[string]string{"error": "invalid cron format"})
+			return
+		}
 		nt.ID = uuid.NewUUID().String()
+		taskRegistryChan <- nt
 		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
 	}
 }
