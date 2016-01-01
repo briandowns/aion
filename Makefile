@@ -36,6 +36,7 @@ get: git hg
 	$(GOGET) github.com/StalkR/goircbot/lib/disk
 	$(GOGET) github.com/gorilla/websocket
 	$(GOGET) github.com/google/go-github/github
+	https://github.com/robfig/cron
 
 # build all and place the binary
 install: clean get

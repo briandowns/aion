@@ -4,10 +4,6 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 )
 
-// JobsDB is an interface so that we can use any number of
-// databases on the backend to store jobs
-type JobsDB interface{}
-
 // Jobber
 type Jobber interface {
 	Start() error
@@ -17,9 +13,9 @@ type Jobber interface {
 
 // Job
 type Job struct {
-	ID    string
-	Name  string
-	Tasks []Task
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Tasks []Task `json:"tasks"`
 }
 
 // JobStatus

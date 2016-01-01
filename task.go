@@ -11,19 +11,21 @@ type Tasker interface {
 
 // Task
 type Task struct {
-	ID   string
-	Name string
-	Desc string
-	Exec string
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Desc     string `json:"desc"`
+	Exec     string `json:"exec"`
+	Schedule string `json:"schedule"`
 }
 
 // NewTask
-func NewTask(name, desc, exec string) *Task {
+func NewTask(name, desc, exec, sched string) *Task {
 	return &Task{
-		ID:   uuid.NewUUID().String(),
-		Name: name,
-		Desc: desc,
-		Exec: exec,
+		ID:       uuid.NewUUID().String(),
+		Name:     name,
+		Desc:     desc,
+		Exec:     exec,
+		Schedule: sched,
 	}
 }
 

@@ -69,10 +69,16 @@ func main() {
 	router.HandleFunc(frontEnd, FrontendHandler()).Methods("GET")
 
 	// Jobs Route
-	router.HandleFunc(JobsPath, JobsRouteHandler(ren))
+	router.HandleFunc(JobsPath, JobsRouteHandler(ren)).Methods("GET")
+
+	// New Jobs Route
+	router.HandleFunc(JobsPath, NewJobsRouteHandler(ren)).Methods("POST")
 
 	// Tasks Route
-	router.HandleFunc(TasksPath, TasksRouteHandler(ren))
+	router.HandleFunc(TasksPath, TasksRouteHandler(ren)).Methods("GET")
+
+	// New Tasks Route
+	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren)).Methods("POST")
 
 	n.UseHandler(router)
 	n.Run(portFlag)
