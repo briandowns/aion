@@ -39,13 +39,6 @@ func (d *Database) connect() error {
 	return nil
 }
 
-// Job holds what's needs to represent a task
-type Job struct {
-	ID    int    `sql:"auto_increment" gorm:"primary_key" json:"id"`
-	Name  string `gorm:"column:name" json:"name"`
-	Tasks []Task `gorm:"column:tasks" json:"tasks"`
-}
-
 // AddJob adds a new job record to the database
 func (d *Database) AddJob(j Job) {
 	d.Conn.NewRecord(j)
@@ -58,15 +51,6 @@ func (d *Database) GetJobs() ([]Job, error) {
 	var data []Job
 	d.Conn.Find(&data)
 	return data, nil
-}
-
-// Task holds what's needs to represent a task
-type Task struct {
-	ID       int    `sql:"auto_increment" gorm:"primary_key" json:"id"`
-	Name     string `gorm:"column:name" json:"name"`
-	Desc     string `gorm:"column:desc" json:"desc"`
-	Exec     string `gorm:"column:exec" json:"exec"`
-	Schedule string `gorm:"column:schedule" json:"schedule"`
 }
 
 // AddTask adds a new task record to the database

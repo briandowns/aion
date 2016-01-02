@@ -21,10 +21,11 @@ var (
 	portFlag      string
 	queueHostFlag string
 	setupFlag     bool
-	dbUser        string
-	dbPass        string
-	dbHost        string
-	dbName        string
+	dbUserFlag    string
+	dbPassFlag    string
+	dbHostFlag    string
+	dbNameFlag    string
+	dbSetupFlag   bool
 )
 
 var jobRegistryChan = make(chan Job)
@@ -34,10 +35,11 @@ var signalsChan = make(chan os.Signal, 1)
 func init() {
 	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
 	flag.StringVar(&portFlag, "port", ":9898", "port to run the server")
-	flag.StringVar(&dbUser, "db-user", "aion", "database user")
-	flag.StringVar(&dbPass, "db-pass", "aion", "database pass")
-	flag.StringVar(&dbHost, "db-host", "aion", "database host")
-	flag.StringVar(&dbName, "db-name", "aion", "database name")
+	flag.StringVar(&dbUserFlag, "db-user", "aion", "database user")
+	flag.StringVar(&dbPassFlag, "db-pass", "aion", "database pass")
+	flag.StringVar(&dbHostFlag, "db-host", "aion", "database host")
+	flag.StringVar(&dbNameFlag, "db-name", "aion", "database name")
+	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB configuration")
 }
 
 func main() {
@@ -45,18 +47,20 @@ func main() {
 
 	signal.Notify(signalsChan, os.Interrupt)
 
-	// launch a go routine to listen for an operating system signals
 	go func() {
 		for sig := range signalsChan {
-			log.Printf("Received ctrl^c.  Exiting... %v\n", sig)
+			log.Printf("Exiting... %v\n", sig)
 			signalsChan = nil
 			os.Exit(1)
 		}
 	}()
 
-	// run database setup if -s is provided at the CLI
 	if setupFlag {
-		// do some setup. ie create queues and topics
+		db, err := NewDatabase(dbUserFlag, dbPassFlag, dbHostFlag, dbNameFlag)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		db.Setup()
 		os.Exit(0)
 	}
 
