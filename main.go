@@ -60,8 +60,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	config := &Config{
+		Database: DBConf{
+			DBHost: dbHostFlag,
+			DBUser: dbUserFlag,
+			DBPass: dbPassFlag,
+			DBName: dbNameFlag,
+		},
+		QueueHost: queueHostFlag,
+	}
+
 	if dbSetupFlag {
-		db, err := NewDatabase(dbUserFlag, dbPassFlag, dbHostFlag, dbNameFlag)
+		db, err := NewDatabase(config)
 		if err != nil {
 			log.Fatalln(err)
 		}

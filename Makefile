@@ -39,6 +39,7 @@ get: git hg
 	$(GOGET) github.com/robfig/cron
 	$(GOGET) github.com/gorhill/cronexpr
 	$(GOGET) github.com/jinzhu/gorm
+	$(GOGET) github.com/nsqio/go-nsq
 
 # build all and place the binary
 install: clean get

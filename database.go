@@ -10,21 +10,13 @@ import (
 
 // Database holds db conf and a connection
 type Database struct {
-	User string
-	Pass string
-	Host string
-	DB   string
+	Conf *Config
 	Conn *gorm.DB
 }
 
 // NewDatabase creates a new Database object
-func NewDatabase(user, pass, host, db string) (*Database, error) {
-	d := &Database{
-		User: user,
-		Pass: pass,
-		Host: host,
-		DB:   db,
-	}
+func NewDatabase(conf *Config) (*Database, error) {
+	d := &Database{}
 	if err := d.connect(); err != nil {
 		return nil, err
 	}
@@ -35,7 +27,7 @@ func NewDatabase(user, pass, host, db string) (*Database, error) {
 func (d *Database) connect() error {
 	db, err := gorm.Open("mysql",
 		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%s&charset=utf8&parseTime=True&loc=Local",
-			d.User, d.Pass, d.Host, 3306, d.DB, "60s"))
+			d.Conf.Database.DBUser, d.Conf.Database.DBPass, d.Conf.Database.DBHost, 3306, d.Conf.Database.DBName, "60s"))
 	if err != nil {
 		return err
 	}
@@ -52,10 +44,17 @@ func (d *Database) AddJob(j Job) {
 }
 
 // GetJobs gets all jobs from the database
-func (d *Database) GetJobs() ([]Job, error) {
+func (d *Database) GetJobs() []Job {
 	var data []Job
 	d.Conn.Find(&data)
-	return data, nil
+	return data
+}
+
+// GetJobByID
+func (d *Database) GetJobByID(id int) []Job {
+	var data []Job
+	d.Conn.Where("id = ?", id).Find(&data)
+	return data
 }
 
 // AddTask adds a new task record to the database
@@ -66,10 +65,17 @@ func (d *Database) AddTask(t Task) {
 }
 
 // GetTasks gets all tasks from the database
-func (d *Database) GetTasks() ([]Task, error) {
+func (d *Database) GetTasks() []Task {
 	var data []Task
 	d.Conn.Find(&data)
-	return data, nil
+	return data
+}
+
+// GetTaskByID
+func (d *Database) GetTaskByID(id int) []Task {
+	var data []Task
+	d.Conn.Where("id = ?", id).Find(&data)
+	return data
 }
 
 // Setup ...sets up the database
@@ -77,8 +83,22 @@ func (d *Database) Setup() {
 	log.Println("Aion database setup starting...")
 	d.Conn.CreateTable(&Job{})
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Job{})
+
 	d.Conn.CreateTable(&Task{})
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Task{})
-	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&Job{}, &Task{})
+
+	d.Conn.CreateTable(&User{})
+	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
+	d.Conn.Model(&User{}).AddForeignKey("permission_id", "permissions(id)", "RESTRICT", "RESTRICT")
+
+	d.Conn.CreateTable(&Permission{})
+	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Permission{})
+
+	d.Conn.CreateTable(&Result{})
+	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Result{})
+	d.Conn.Model(&Result{}).AddForeignKey("task_id", "tasks(id)", "RESTRICT", "RESTRICT")
+	d.Conn.Model(&Result{}).AddIndex("idx_start_end", "start_time", "end_time")
+
+	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&Job{}, &Task{}, &User{}, &Permission{}, &Result{})
 	log.Println("Complete!")
 }
