@@ -35,9 +35,9 @@ var signalsChan = make(chan os.Signal, 1)
 func init() {
 	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
 	flag.StringVar(&portFlag, "port", ":9898", "port to run the server")
-	flag.StringVar(&dbUserFlag, "db-user", "aion", "database user")
-	flag.StringVar(&dbPassFlag, "db-pass", "aion", "database pass")
-	flag.StringVar(&dbHostFlag, "db-host", "aion", "database host")
+	flag.StringVar(&dbUserFlag, "db-user", "aion", "database username")
+	flag.StringVar(&dbPassFlag, "db-pass", "aion", "database password")
+	flag.StringVar(&dbHostFlag, "db-host", "localhost", "database hostname")
 	flag.StringVar(&dbNameFlag, "db-name", "aion", "database name")
 	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB configuration")
 }
@@ -55,7 +55,12 @@ func main() {
 		}
 	}()
 
-	if setupFlag {
+	if queueHostFlag == "" || dbUserFlag == "" || dbPassFlag == "" || dbHostFlag == "" || dbNameFlag == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	if dbSetupFlag {
 		db, err := NewDatabase(dbUserFlag, dbPassFlag, dbHostFlag, dbNameFlag)
 		if err != nil {
 			log.Fatalln(err)

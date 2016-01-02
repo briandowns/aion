@@ -19,7 +19,12 @@ type Database struct {
 
 // NewDatabase creates a new Database object
 func NewDatabase(user, pass, host, db string) (*Database, error) {
-	d := &Database{}
+	d := &Database{
+		User: user,
+		Pass: pass,
+		Host: host,
+		DB:   db,
+	}
 	if err := d.connect(); err != nil {
 		return nil, err
 	}
@@ -29,8 +34,8 @@ func NewDatabase(user, pass, host, db string) (*Database, error) {
 // Connect will provide the caller with a db connection
 func (d *Database) connect() error {
 	db, err := gorm.Open("mysql",
-		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%d&charset=utf8&parseTime=True&loc=Local",
-			d.User, d.Pass, d.Host, 3306, d.DB, 60))
+		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%s&charset=utf8&parseTime=True&loc=Local",
+			d.User, d.Pass, d.Host, 3306, d.DB, "60s"))
 	if err != nil {
 		return err
 	}
