@@ -24,8 +24,10 @@ _testmain.go
 *.test
 *.prof
 
-.idea
 *.iml
+
+# binary 
+aion
 
 # log files
 *.log
