@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorhill/cronexpr"
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 )
 
@@ -26,6 +28,11 @@ const (
 	TasksPath = APIBase + "tasks"
 )
 
+var (
+	JobByID  = JobsPath + "/{id}"
+	TaskByID = TasksPath + "/{id}"
+)
+
 // FrontendHandler provides the handler for the main application
 func FrontendHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +41,13 @@ func FrontendHandler() http.HandlerFunc {
 }
 
 // JobsRouteHandler provides the handler for jobs data
-func JobsRouteHandler(ren *render.Render) http.HandlerFunc {
+func JobsRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"jobs": ""})
 	}
 }
@@ -60,6 +72,26 @@ func NewJobsRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handle
 
 		dispatcher.NewJobChan <- nj
 		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
+	}
+}
+
+// JobsByIDRouteHandler provides the handler for jobs data for the given ID
+func JobsByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		jid := vars["id"]
+
+		jobID, err := strconv.Atoi(jid)
+		if err != nil {
+			log.Println(err)
+		}
+
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"job": db.GetJobByID(jobID)})
 	}
 }
 
@@ -112,5 +144,25 @@ func NewTasksRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handl
 
 		dispatcher.NewTaskChan <- nt
 		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
+	}
+}
+
+// TasksByIDRouteHandler provides the handler for tasks data for the given ID
+func TasksByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		tid := vars["id"]
+
+		taskID, err := strconv.Atoi(tid)
+		if err != nil {
+			log.Println(err)
+		}
+
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": db.GetTaskByID(taskID)})
 	}
 }

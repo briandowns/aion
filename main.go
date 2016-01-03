@@ -106,7 +106,7 @@ func main() {
 	router.HandleFunc(frontEnd, FrontendHandler()).Methods("GET")
 
 	// Jobs Route
-	router.HandleFunc(JobsPath, JobsRouteHandler(ren)).Methods("GET")
+	router.HandleFunc(JobsPath, JobsRouteHandler(ren, conf)).Methods("GET")
 
 	// New Jobs Route
 	router.HandleFunc(JobsPath, NewJobsRouteHandler(ren, dispatcher)).Methods("POST")
@@ -114,6 +114,8 @@ func main() {
 	// Tasks Route
 	router.HandleFunc(TasksPath, TasksRouteHandler(ren, conf)).Methods("GET")
 
+	// Task By ID Route
+	router.HandleFunc(TaskByID, TasksByIDRouteHandler(ren, conf)).Methods("GET")
 	// New Tasks Route
 	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren, dispatcher)).Methods("POST")
 
