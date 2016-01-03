@@ -86,8 +86,11 @@ func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
 		case nt.Name == "":
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'name' field"})
 			return
-		case nt.Exec == "":
-			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'exec' field"})
+		case nt.CMD == "":
+			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'cmd' field"})
+			return
+		case nt.Args == "":
+			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'args' field"})
 			return
 		case nt.Schedule == "":
 			ren.JSON(w, 400, map[string]string{"error": "missing or empty 'schedule' field"})

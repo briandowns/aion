@@ -4,13 +4,13 @@ import (
 	"sync"
 )
 
-// Jobber
-type Jobber interface {
+// JobStatuser
+type JobStatuser interface {
 	Enable()
 	Disable()
 }
 
-// JobStatus
+// JobStatus holds the
 type JobStatus struct {
 	Job
 	Status bool

@@ -16,7 +16,8 @@ type Task struct {
 	ID       int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
 	Name     string `gorm:"column:name" json:"name"`
 	Desc     string `gorm:"column:desc" json:"desc"`
-	Exec     string `gorm:"column:exec" json:"exec"`
+	CMD      string `gorm:"column:cmd" json:"cmd"`
+	Args     string `gorm:"column:args" json:"args"`
 	Schedule string `gorm:"column:schedule" json:"schedule"`
 }
 
