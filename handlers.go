@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorhill/cronexpr"
@@ -22,7 +23,7 @@ const (
 	JobsPath = APIBase + "jobs"
 
 	// TasksPath is the path to access tasks
-	TasksPath = JobsPath + "/tasks"
+	TasksPath = APIBase + "tasks"
 )
 
 // FrontendHandler provides the handler for the main application
@@ -40,7 +41,7 @@ func JobsRouteHandler(ren *render.Render) http.HandlerFunc {
 }
 
 // NewJobsRouteHandler creates a new job with the POST'd data
-func NewJobsRouteHandler(ren *render.Render) http.HandlerFunc {
+func NewJobsRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nj Job
 
@@ -63,9 +64,14 @@ func NewJobsRouteHandler(ren *render.Render) http.HandlerFunc {
 }
 
 // TasksRouteHandler provides the handler for tasks data
-func TasksRouteHandler(ren *render.Render) http.HandlerFunc {
+func TasksRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ren.JSON(w, http.StatusOK, map[string]interface{}{"tasks": ""})
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"tasks": db.GetTasks()})
 	}
 }
 

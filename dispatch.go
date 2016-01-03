@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os/exec"
 	"strings"
 
@@ -9,19 +10,21 @@ import (
 
 // Dispatcher
 type Dispatcher struct {
-	Conf *Config
-	cron *cron.Cron
+	Conf        *Config
+	cron        *cron.Cron
 	ResultChan  chan []byte
+	NewJobChan  chan Job
 	NewTaskChan chan Task
-	NewJobChan chan Job
 }
 
 // NewDispatcher creates a new refence of type Dispatcher
 func NewDispatcher(conf *Config) *Dispatcher {
 	return &Dispatcher{
-		Conf:       conf,
-		cron: cron.New(),
-		ResultChan: make(chan []byte),
+		Conf:        conf,
+		cron:        cron.New(),
+		ResultChan:  make(chan []byte),
+		NewJobChan:  make(chan Job),
+		NewTaskChan: make(chan Task),
 	}
 }
 
@@ -37,10 +40,10 @@ func (d *Dispatcher) generateTaskFunc(cmd string, args []string) (func(), error)
 }
 
 // AddExistingTasks adds active tasks from the database to the scheduler
-func () AddExistingTasks() {
+func (d *Dispatcher) AddExistingTasks() {
 	db, err := NewDatabase(d.Conf)
 	if err != nil {
-		return err
+		log.Fatalln(err)
 	}
 	defer db.Conn.Close()
 
@@ -48,7 +51,7 @@ func () AddExistingTasks() {
 	for _, task := range tasks {
 		cmdFunc, err := d.generateTaskFunc(task.CMD, strings.Split(task.Args, ","))
 		if err != nil {
-			return err
+			log.Println(err)
 		}
 		d.cron.AddFunc(task.Schedule, cmdFunc)
 	}
@@ -56,13 +59,20 @@ func () AddExistingTasks() {
 
 // Run
 func (d *Dispatcher) Run() error {
+	db, err := NewDatabase(d.Conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer db.Conn.Close()
 	d.cron.Start()
 	defer d.cron.Stop()
 
 	for {
 		select {
+		case job := <-d.NewJobChan:
+			db.AddJob(job)
 		case task := <-d.NewTaskChan:
-			//
+			db.AddTask(task)
 		}
 	}
 }

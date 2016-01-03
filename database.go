@@ -33,7 +33,7 @@ func (d *Database) connect() error {
 	if err != nil {
 		return err
 	}
-	db.LogMode(false)
+	db.LogMode(true)
 	d.Conn = &db
 	return nil
 }

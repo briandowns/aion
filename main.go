@@ -77,13 +77,13 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		defer db.Close()
+		defer db.Conn.Close()
 		db.Setup()
 		os.Exit(0)
 	}
 
 	dispatcher := NewDispatcher(conf)
-	go DR.Run()
+	go dispatcher.Run()
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
@@ -109,10 +109,10 @@ func main() {
 	router.HandleFunc(JobsPath, JobsRouteHandler(ren)).Methods("GET")
 
 	// New Jobs Route
-	router.HandleFunc(JobsPath, NewJobsRouteHandler(ren)).Methods("POST")
+	router.HandleFunc(JobsPath, NewJobsRouteHandler(ren, dispatcher)).Methods("POST")
 
 	// Tasks Route
-	router.HandleFunc(TasksPath, TasksRouteHandler(ren)).Methods("GET")
+	router.HandleFunc(TasksPath, TasksRouteHandler(ren, conf)).Methods("GET")
 
 	// New Tasks Route
 	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren, dispatcher)).Methods("POST")
