@@ -6,11 +6,12 @@ type Tasker interface {
 }
 
 // NewTask
-func NewTask(name, desc, exec, sched string) *Task {
+func NewTask(name, desc, cmd, args, sched string) *Task {
 	return &Task{
 		Name:     name,
 		Desc:     desc,
-		Exec:     exec,
+		CMD:      cmd,
+		Args:     args,
 		Schedule: sched,
 	}
 }

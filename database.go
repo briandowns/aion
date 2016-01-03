@@ -16,7 +16,9 @@ type Database struct {
 
 // NewDatabase creates a new Database object
 func NewDatabase(conf *Config) (*Database, error) {
-	d := &Database{}
+	d := &Database{
+		Conf: conf,
+	}
 	if err := d.connect(); err != nil {
 		return nil, err
 	}

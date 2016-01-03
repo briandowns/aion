@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -60,24 +61,29 @@ func main() {
 		os.Exit(1)
 	}
 
-	config := &Config{
+	conf := &Config{
 		Database: DBConf{
-			DBHost: dbHostFlag,
 			DBUser: dbUserFlag,
 			DBPass: dbPassFlag,
+			DBHost: dbHostFlag,
 			DBName: dbNameFlag,
 		},
 		QueueHost: queueHostFlag,
 	}
 
 	if dbSetupFlag {
-		db, err := NewDatabase(config)
+		fmt.Println(conf.Database.DBUser, conf.Database.DBPass, conf.Database.DBHost, conf.Database.DBName)
+		db, err := NewDatabase(conf)
 		if err != nil {
 			log.Fatalln(err)
 		}
+		defer db.Close()
 		db.Setup()
 		os.Exit(0)
 	}
+
+	dispatcher := NewDispatcher(conf)
+	go DR.Run()
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
@@ -109,7 +115,7 @@ func main() {
 	router.HandleFunc(TasksPath, TasksRouteHandler(ren)).Methods("GET")
 
 	// New Tasks Route
-	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren)).Methods("POST")
+	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren, dispatcher)).Methods("POST")
 
 	n.UseHandler(router)
 	n.Run(portFlag)

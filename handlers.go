@@ -57,7 +57,7 @@ func NewJobsRouteHandler(ren *render.Render) http.HandlerFunc {
 			return
 		}
 
-		jobRegistryChan <- nj // send the new job to the job worker
+		dispatcher.NewJobChan <- nj
 		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
 	}
 }
@@ -70,7 +70,7 @@ func TasksRouteHandler(ren *render.Render) http.HandlerFunc {
 }
 
 // NewTasksRouteHandler creates a new task with the POST'd data
-func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
+func NewTasksRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nt Task
 
@@ -104,7 +104,7 @@ func NewTasksRouteHandler(ren *render.Render) http.HandlerFunc {
 			return
 		}
 
-		taskRegistryChan <- nt // send the new task to the task worker
+		dispatcher.NewTaskChan <- nt
 		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
 	}
 }
