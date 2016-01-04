@@ -23,10 +23,10 @@ const (
 	APIBase = "/api/v1/"
 
 	// JobsPath is the path to access jobs
-	JobsPath = APIBase + "jobs"
+	JobsPath = APIBase + "job"
 
 	// TasksPath is the path to access tasks
-	TasksPath = APIBase + "tasks"
+	TasksPath = APIBase + "task"
 )
 
 var (

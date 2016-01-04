@@ -2,7 +2,7 @@
 
 GOCMD = go
 GOBUILD = $(GOCMD) build
-GOGET = $(GOCMD) get -v
+GOGET = $(GOCMD) get
 GOCLEAN = $(GOCMD) clean
 GOINSTALL = $(GOCMD) install
 GOTEST = $(GOCMD) test
@@ -24,26 +24,29 @@ all : build
 
 # download 3rd party dependencies
 get: git hg
-	$(GOGET) code.google.com/p/go-uuid/uuid
-	$(GOGET) github.com/codegangsta/negroni
-	$(GOGET) github.com/goincremental/negroni-sessions
-	$(GOGET) github.com/gorilla/mux
-	$(GOGET) github.com/unrolled/render
-	$(GOGET) github.com/go-sql-driver/mysql
-	$(GOGET) github.com/jinzhu/gorm
-	$(GOGET) github.com/hashicorp/consul/api
-	$(GOGET) github.com/cloudfoundry/gosigar
-	$(GOGET) github.com/StalkR/goircbot/lib/disk
-	$(GOGET) github.com/gorilla/websocket
-	$(GOGET) github.com/google/go-github/github
-	$(GOGET) github.com/robfig/cron
-	$(GOGET) github.com/gorhill/cronexpr
-	$(GOGET) github.com/jinzhu/gorm
-	$(GOGET) github.com/nsqio/go-nsq
+	$(GOGET) -u -v code.google.com/p/go-uuid/uuid
+	$(GOGET) -u -v github.com/codegangsta/negroni
+	$(GOGET) -u -v github.com/goincremental/negroni-sessions
+	$(GOGET) -u -v github.com/gorilla/mux
+	$(GOGET) -u -v github.com/unrolled/render
+	$(GOGET) -u -v github.com/go-sql-driver/mysql
+	$(GOGET) -u -v github.com/jinzhu/gorm
+	$(GOGET) -u -v github.com/hashicorp/consul/api
+	$(GOGET) -u -v github.com/cloudfoundry/gosigar
+	$(GOGET) -u -v github.com/StalkR/goircbot/lib/disk
+	$(GOGET) -u -v github.com/gorilla/websocket
+	$(GOGET) -u -v github.com/google/go-github/github
+	$(GOGET) -u -v github.com/robfig/cron
+	$(GOGET) -u -v github.com/gorhill/cronexpr
+	$(GOGET) -u -v github.com/jinzhu/gorm
+	$(GOGET) -u -v github.com/nsqio/go-nsq
 
 # build all and place the binary
 install: clean get
 	$(GOINSTALL) -v
+
+# install dependancies
+dep: get
 
 # remove aion artifact(s)
 clean:
