@@ -27,6 +27,7 @@ var (
 	dbHostFlag    string
 	dbNameFlag    string
 	dbSetupFlag   bool
+	resultWorkers int
 )
 
 var jobRegistryChan = make(chan Job)
@@ -41,6 +42,7 @@ func init() {
 	flag.StringVar(&dbHostFlag, "db-host", "localhost", "database hostname")
 	flag.StringVar(&dbNameFlag, "db-name", "aion", "database name")
 	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB configuration")
+	flag.IntVar(&resultWorkers, "result-workers", 5, "number of result workers to start")
 }
 
 func main() {
@@ -56,11 +58,13 @@ func main() {
 		}
 	}()
 
-	if queueHostFlag == "" || dbUserFlag == "" || dbPassFlag == "" || dbHostFlag == "" || dbNameFlag == "" {
+	if queueHostFlag == "" || dbUserFlag == "" || dbPassFlag == "" ||
+		dbHostFlag == "" || dbNameFlag == "" || resultWorkers < 3 {
 		flag.Usage()
 		os.Exit(1)
 	}
 
+	// assign
 	conf := &Config{
 		Database: DBConf{
 			DBUser: dbUserFlag,
@@ -68,7 +72,8 @@ func main() {
 			DBHost: dbHostFlag,
 			DBName: dbNameFlag,
 		},
-		QueueHost: queueHostFlag,
+		QueueHost:     queueHostFlag,
+		ResultWorkers: resultWorkers,
 	}
 
 	if dbSetupFlag {
@@ -83,6 +88,8 @@ func main() {
 	}
 
 	dispatcher := NewDispatcher(conf)
+
+	// launch the dispatcher
 	go dispatcher.Run()
 
 	// setup the renderer for returning our JSON

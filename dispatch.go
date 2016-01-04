@@ -10,11 +10,13 @@ import (
 
 // Dispatcher holds the values that comprise the Aion dispatcher
 type Dispatcher struct {
-	Conf        *Config
-	cron        *cron.Cron
-	ResultChan  chan []byte
-	NewJobChan  chan Job
-	NewTaskChan chan Task
+	Conf         *Config
+	cron         *cron.Cron
+	ResultChan   chan []byte
+	NewJobChan   chan Job
+	JobProcChan  chan Job
+	NewTaskChan  chan Task
+	TaskProcChan chan Task
 }
 
 // NewDispatcher creates a new refence of type Dispatcher
@@ -75,4 +77,8 @@ func (d *Dispatcher) Run() error {
 			db.AddTask(task)
 		}
 	}
+}
+
+// ResultWorkers starts the result workers
+func (d *Dispatcher) ResultWorkers() {
 }

@@ -10,6 +10,7 @@ type DBConf struct {
 
 // Config holds the running config values
 type Config struct {
-	Database  DBConf
-	QueueHost string
+	Database      DBConf
+	QueueHost     string
+	ResultWorkers int
 }
