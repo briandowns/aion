@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -29,9 +30,15 @@ const (
 )
 
 var (
-	JobByID  = JobsPath + "/{id}"
+	// JobByID is the path to get specific job data
+	JobByID = JobsPath + "/{id}"
+
+	// TaskByID is the path to get specific task data
 	TaskByID = TasksPath + "/{id}"
 )
+
+var ErrNoJobsFound = errors.New("no jobs found")
+var ErrNoTasksFound = errors.New("no tasks found")
 
 // FrontendHandler provides the handler for the main application
 func FrontendHandler() http.HandlerFunc {
@@ -48,12 +55,12 @@ func JobsRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 			log.Println(err)
 		}
 		defer db.Conn.Close()
-		ren.JSON(w, http.StatusOK, map[string]interface{}{"jobs": ""})
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"jobs": db.GetJobs()})
 	}
 }
 
-// NewJobsRouteHandler creates a new job with the POST'd data
-func NewJobsRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
+// NewJobRouteHandler creates a new job with the POST'd data
+func NewJobRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nj Job
 
@@ -75,8 +82,8 @@ func NewJobsRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handle
 	}
 }
 
-// JobsByIDRouteHandler provides the handler for jobs data for the given ID
-func JobsByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+// JobByIDRouteHandler provides the handler for jobs data for the given ID
+func JobByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		jid := vars["id"]
@@ -91,7 +98,33 @@ func JobsByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 			log.Println(err)
 		}
 		defer db.Conn.Close()
-		ren.JSON(w, http.StatusOK, map[string]interface{}{"job": db.GetJobByID(jobID)})
+
+		if t := db.GetJobByID(jobID); len(t) > 0 {
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": t})
+		} else {
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": ErrNoJobsFound.Error()})
+		}
+	}
+}
+
+// JobDeleteByIDRouteHandler deletes the job data for the given ID
+func JobDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		jid := vars["id"]
+		jobID, err := strconv.Atoi(jid)
+		if err != nil {
+			log.Println(err)
+		}
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+
+		db.DeleteTask(jobID)
+
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": jobID})
 	}
 }
 
@@ -107,8 +140,8 @@ func TasksRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 	}
 }
 
-// NewTasksRouteHandler creates a new task with the POST'd data
-func NewTasksRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
+// NewTaskRouteHandler creates a new task with the POST'd data
+func NewTaskRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nt Task
 
@@ -147,8 +180,8 @@ func NewTasksRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handl
 	}
 }
 
-// TasksByIDRouteHandler provides the handler for tasks data for the given ID
-func TasksByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+// TaskByIDRouteHandler provides the handler for tasks data for the given ID
+func TaskByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		tid := vars["id"]
@@ -163,6 +196,32 @@ func TasksByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 			log.Println(err)
 		}
 		defer db.Conn.Close()
-		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": db.GetTaskByID(taskID)})
+
+		if t := db.GetTaskByID(taskID); len(t) > 0 {
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": t})
+		} else {
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": ErrNoTasksFound.Error()})
+		}
+	}
+}
+
+// TaskDeleteByIDRouteHandler deletes the task data for the given ID
+func TaskDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		tid := vars["id"]
+		taskID, err := strconv.Atoi(tid)
+		if err != nil {
+			log.Println(err)
+		}
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+
+		db.DeleteTask(taskID)
+
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
 	}
 }

@@ -80,6 +80,11 @@ func (d *Database) GetTaskByID(id int) []Task {
 	return data
 }
 
+// DeleteTask deletes a task
+func (d *Database) DeleteTask(id int) {
+	d.Conn.Delete(&Task{ID: id})
+}
+
 // Setup ...sets up the database
 func (d *Database) Setup() {
 	log.Println("Aion database setup starting...")

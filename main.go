@@ -108,16 +108,26 @@ func main() {
 	// Jobs Route
 	router.HandleFunc(JobsPath, JobsRouteHandler(ren, conf)).Methods("GET")
 
+	// Job By ID Route
+	router.HandleFunc(JobByID, JobByIDRouteHandler(ren, conf)).Methods("GET")
+
+	// Job Delete By ID Route
+	router.HandleFunc(TaskByID, JobDeleteByIDRouteHandler(ren, conf)).Methods("DELETE")
+
 	// New Jobs Route
-	router.HandleFunc(JobsPath, NewJobsRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(JobsPath, NewJobRouteHandler(ren, dispatcher)).Methods("POST")
 
 	// Tasks Route
 	router.HandleFunc(TasksPath, TasksRouteHandler(ren, conf)).Methods("GET")
 
 	// Task By ID Route
-	router.HandleFunc(TaskByID, TasksByIDRouteHandler(ren, conf)).Methods("GET")
+	router.HandleFunc(TaskByID, TaskByIDRouteHandler(ren, conf)).Methods("GET")
+
+	// Task Delete By ID Route
+	router.HandleFunc(TaskByID, TaskDeleteByIDRouteHandler(ren, conf)).Methods("DELETE")
+
 	// New Tasks Route
-	router.HandleFunc(TasksPath, NewTasksRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(TasksPath, NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
 
 	n.UseHandler(router)
 	n.Run(portFlag)
