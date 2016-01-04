@@ -1,7 +1,5 @@
 # Aion
 
-[![GoDoc](https://godoc.org/github.com/briandowns/aion?status.svg)](https://godoc.org/github.com/briandowns/aion)
-
 WIP
 
 aion is a job scheduling engine that utilizes cron syntax.  All tasks are executed in their own goroutine and their results are sent into a queue for another worker to pick-up and process.
