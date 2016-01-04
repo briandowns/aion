@@ -8,7 +8,7 @@ import (
 	"github.com/robfig/cron"
 )
 
-// Dispatcher
+// Dispatcher holds the values that comprise the Aion dispatcher
 type Dispatcher struct {
 	Conf        *Config
 	cron        *cron.Cron
@@ -57,7 +57,7 @@ func (d *Dispatcher) AddExistingTasks() {
 	}
 }
 
-// Run
+// Run starts the dispatcher
 func (d *Dispatcher) Run() error {
 	db, err := NewDatabase(d.Conf)
 	if err != nil {

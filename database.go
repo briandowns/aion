@@ -52,7 +52,7 @@ func (d *Database) GetJobs() []Job {
 	return data
 }
 
-// GetJobByID
+// GetJobByID gets the job for the given ID
 func (d *Database) GetJobByID(id int) []Job {
 	var data []Job
 	d.Conn.Where("id = ?", id).Find(&data)
@@ -73,7 +73,7 @@ func (d *Database) GetTasks() []Task {
 	return data
 }
 
-// GetTaskByID
+// GetTaskByID gets the task for the given ID
 func (d *Database) GetTaskByID(id int) []Task {
 	var data []Task
 	d.Conn.Where("id = ?", id).Find(&data)
