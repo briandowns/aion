@@ -8,6 +8,7 @@ import (
 type Job struct {
 	ID    int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
 	Name  string `gorm:"column:name" json:"name"`
+	Desc  string `gorm:"column:desc" json:"desc"`
 	Tasks string `gorm:"column:tasks" json:"tasks"`
 }
 
@@ -42,4 +43,5 @@ type Result struct {
 	TaskID    int       `gorm:"column:task_id" json:"task_id"`
 	StartTime time.Time `gorm:"column:start_time" json:"start_time"`
 	EndTime   time.Time `gorm:"column:end_time" json:"end_time"`
+	Result    string
 }

@@ -40,6 +40,7 @@ get: git hg
 	$(GOGET) -u -v github.com/gorhill/cronexpr
 	$(GOGET) -u -v github.com/jinzhu/gorm
 	$(GOGET) -u -v github.com/nsqio/go-nsq
+	$(GOGET) -u -v github.com/mikespook/gorbac
 
 # build all and place the binary
 install: clean get

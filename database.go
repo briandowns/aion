@@ -8,6 +8,13 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// DataAccess
+type DataAccess interface {
+	GetAll(d *Database)
+	GetByID(d *Database, id int)
+	Delete(d *Database, id int)
+}
+
 // Database holds db conf and a connection
 type Database struct {
 	Conf *Config
@@ -59,6 +66,11 @@ func (d *Database) GetJobByID(id int) []Job {
 	return data
 }
 
+// DeleteJob deletes a task
+func (d *Database) DeleteJob(id int) {
+	d.Conn.Delete(&Job{ID: id})
+}
+
 // AddTask adds a new task record to the database
 func (d *Database) AddTask(t Task) {
 	d.Conn.NewRecord(t)
@@ -83,6 +95,63 @@ func (d *Database) GetTaskByID(id int) []Task {
 // DeleteTask deletes a task
 func (d *Database) DeleteTask(id int) {
 	d.Conn.Delete(&Task{ID: id})
+}
+
+// GetUsers gets all users from the database
+func (d *Database) GetUsers() []User {
+	var data []User
+	d.Conn.Find(&data)
+	return data
+}
+
+// GetUserByID gets the user for the given ID
+func (d *Database) GetUserByID(id int) []User {
+	var data []User
+	d.Conn.Where("id = ?", id).Find(&data)
+	return data
+}
+
+// DeleteUser deletes a task
+func (d *Database) DeleteUser(id int) {
+	d.Conn.Delete(&User{ID: id})
+}
+
+// GetPermissions gets all permissions from the database
+func (d *Database) GetPermissions() []Permission {
+	var data []Permission
+	d.Conn.Find(&data)
+	return data
+}
+
+// GetPermissionByID gets the user for the given ID
+func (d *Database) GetPermissionByID(id int) []Permission {
+	var data []Permission
+	d.Conn.Where("id = ?", id).Find(&data)
+	return data
+}
+
+// DeletePermission deletes a task
+func (d *Database) DeletePermission(id int) {
+	d.Conn.Delete(&Permission{ID: id})
+}
+
+// GetResults gets all permissions from the database
+func (d *Database) GetResults() []Permission {
+	var data []Permission
+	d.Conn.Find(&data)
+	return data
+}
+
+// GetResultByID gets the user for the given ID
+func (d *Database) GetResultByID(id int) []Permission {
+	var data []Permission
+	d.Conn.Where("id = ?", id).Find(&data)
+	return data
+}
+
+// DeleteResult deletes a task
+func (d *Database) DeleteResult(id int) {
+	d.Conn.Delete(&Result{ID: id})
 }
 
 // Setup ...sets up the database

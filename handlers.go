@@ -22,11 +22,14 @@ const (
 	// APIBase is the base path for API access
 	APIBase = "/api/v1/"
 
-	// JobsPath is the path to access jobs
+	// JobsPath is the path to manage jobs
 	JobsPath = APIBase + "job"
 
-	// TasksPath is the path to access tasks
+	// TasksPath is the path to manage tasks
 	TasksPath = APIBase + "task"
+
+	// UserPath is the path to manage users
+	UserPath = APIBase + "user"
 )
 
 var (
@@ -35,6 +38,9 @@ var (
 
 	// TaskByID is the path to get specific task data
 	TaskByID = TasksPath + "/{id}"
+
+	// UserByID is the path to get specific user data
+	UserByID = UserPath + "/{id}"
 )
 
 // ErrNoJobsFound given when a job isn't found
@@ -226,5 +232,17 @@ func TaskDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFu
 		db.DeleteTask(taskID)
 
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
+	}
+}
+
+// UsersRouteHandler provides the handler for users data
+func UsersRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db, err := NewDatabase(conf)
+		if err != nil {
+			log.Println(err)
+		}
+		defer db.Conn.Close()
+		ren.JSON(w, http.StatusOK, map[string]interface{}{"tasks": db.GetUsers()})
 	}
 }
