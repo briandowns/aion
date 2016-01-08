@@ -1,0 +1,42 @@
+db:
+  image: orchardup/mysql
+  environment:
+    MYSQL_DATABASE: aion
+    MYSQL_ROOT_PASSWORD: imsosecure
+
+nsqlookupd:
+  image: nsqio/nsq:v0.3.6
+  command: /nsqlookupd
+  expose:
+    - 4160
+    - 4161
+
+nsqadmin:
+  image: nsqio/nsq:v0.3.6
+  command: "sh -c '/nsqadmin \
+    --lookupd-http-address=nsqlookupd:4161
+    '"
+  links:
+    - nsqlookupd
+    - nsqd
+  expose:
+    - 4171
+  ports:
+    - 4171:4171
+
+nsqd:
+  image: nsqio/nsq:v0.3.6
+  volumes:
+    - /data
+  command: "sh -c '/nsqd \
+    --data-path=/data \
+    --lookupd-tcp-address=nsqlookupd:4160 \
+    '"
+  links:
+    - nsqlookupd
+  expose:
+    - 4150
+    - 4151
+  ports:
+    - 4150:4150
+    - 4151:4151
