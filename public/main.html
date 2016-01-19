@@ -1,0 +1,73 @@
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Aion</h1>
+          <div class="row placeholders">
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Available Jobs</h4>
+              <span class="text-muted">Available</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Hung Jobs</h4>
+              <span class="text-muted">Hung</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Available Tasks</h4>
+              <span class="text-muted">Available</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Hung Tasks</h4>
+              <span class="text-muted">Hung</span>
+            </div>
+          </div>
+          <div ng-controller="mainController">
+            <h2 class="sub-header">Jobs</h2>
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Tasks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="job in jobs">
+                    <td> {{ job.id }}    </td>
+                    <td> {{ job.name }}  </td>
+                    <td> {{ job.desc }}  </td>
+                    <td> {{ job.tasks }} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <h2 class="sub-header">Tasks</h2>
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Command</th>
+                    <th>Arguments</th>
+                    <th>Schedule</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="task in tasks">
+                    <td> {{ task.id }}    </td>
+                    <td> {{ task.name }}  </td>
+                    <td> {{ task.desc }}  </td>
+                    <td> {{ task.cmd }}  </td>
+                    <td> {{ task.args }}  </td>
+                    <td> {{ task.schedule }} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
