@@ -1,51 +1,47 @@
 db:
-  image: mysql:latest
-  expose:
-    - "3306"
-  ports:
-    - "3307:3306"
+  image: mysql:5.7
   environment:
     MYSQL_DATABASE: aion
-    MYSQL_USER: root
+    MYSQL_USER: aion 
     MYSQL_PASSWORD: aion
     MYSQL_ROOT_PASSWORD: aion
+  ports:
+    - "3306"
 
 nsqlookupd:
   image: nsqio/nsq:v0.3.5
   command: /nsqlookupd
   expose:
-    - 4160:4160
-    - 4161:4161
+    - "4160"
+    - "4161"
 
 nsqadmin:
   image: nsqio/nsq:v0.3.5
-  command: "sh -c '/nsqadmin --lookupd-http-address=nsqlookupd:4161'"
+  command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
   links:
     - nsqlookupd
     - nsqd
-  expose:
-    - 4171
   ports:
-    - 4171:4171
+    - "4171"
 
 nsqd:
   image: nsqio/nsq:v0.3.5
   volumes:
     - /data
-  command: "sh -c '/nsqd --data-path=/data --lookupd-tcp-address=nsqlookupd:4160'"
+  command: /nsqd --data-path=/data --lookupd-tcp-address=nsqlookupd:4160
   links:
     - nsqlookupd
-  expose:
-    - 4150
-    - 4151
   ports:
-    - 4150:4150
-    - 4151:4151
+    - "4150"
+    - "4151"
 
 aion:
-  image: ubuntu
-  command: "ls"
-  expose: 
-    - 9898
+  image: ubuntu:vivid
+  links:
+    - db
+    - nsqd
+  volumes:
+    - ./:/opt/aion
+  working_dir: /opt/aion
   ports:
-    - 9898:9898
+    - "9898"
