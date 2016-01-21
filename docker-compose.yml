@@ -6,7 +6,7 @@ db:
     - "3307:3306"
   environment:
     MYSQL_DATABASE: aion
-    MYSQL_USER: aion
+    MYSQL_USER: root
     MYSQL_PASSWORD: aion
     MYSQL_ROOT_PASSWORD: aion
 
