@@ -41,7 +41,7 @@ aion:
     - db
     - nsqd
   volumes:
-    - ./:/opt/aion
+    - ./:/opt/aion:ro
   working_dir: /opt/aion
   ports:
     - "9898"
