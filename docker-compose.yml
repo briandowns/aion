@@ -1,15 +1,21 @@
 db:
-  image: orchardup/mysql
+  image: mysql:latest
+  expose:
+    - "3306"
+  ports:
+    - "3307:3306"
   environment:
     MYSQL_DATABASE: aion
-    MYSQL_ROOT_PASSWORD: imsosecure
+    MYSQL_USER: root
+    MYSQL_PASSWORD: aion
+    MYSQL_ROOT_PASSWORD: aion
 
 nsqlookupd:
   image: nsqio/nsq:v0.3.5
   command: /nsqlookupd
   expose:
-    - 4160
-    - 4161
+    - 4160:4160
+    - 4161:4161
 
 nsqadmin:
   image: nsqio/nsq:v0.3.5
