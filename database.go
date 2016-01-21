@@ -36,7 +36,7 @@ func NewDatabase(conf *Config) (*Database, error) {
 func (d *Database) connect() error {
 	db, err := gorm.Open("mysql",
 		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%s&charset=utf8&parseTime=True&loc=Local",
-			d.Conf.Database.DBUser, d.Conf.Database.DBPass, d.Conf.Database.DBHost, 3306, d.Conf.Database.DBName, "60s"))
+			d.Conf.Database.DBUser, d.Conf.Database.DBPass, d.Conf.Database.DBHost, d.Conf.Database.DBPort, d.Conf.Database.DBName, "60s"))
 	if err != nil {
 		return err
 	}

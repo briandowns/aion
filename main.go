@@ -25,6 +25,7 @@ var (
 	dbUserFlag    string
 	dbPassFlag    string
 	dbHostFlag    string
+	dbPortFlag    int
 	dbNameFlag    string
 	dbSetupFlag   bool
 	resultWorkers int
@@ -40,6 +41,7 @@ func init() {
 	flag.StringVar(&dbUserFlag, "db-user", "aion", "database username")
 	flag.StringVar(&dbPassFlag, "db-pass", "aion", "database password")
 	flag.StringVar(&dbHostFlag, "db-host", "localhost", "database hostname")
+	flag.IntVar(&dbPortFlag, "db-port", 3306, "database port")
 	flag.StringVar(&dbNameFlag, "db-name", "aion", "database name")
 	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB configuration")
 	flag.IntVar(&resultWorkers, "result-workers", 5, "number of result workers to start")
@@ -59,7 +61,7 @@ func main() {
 	}()
 
 	if queueHostFlag == "" || dbUserFlag == "" || dbPassFlag == "" ||
-		dbHostFlag == "" || dbNameFlag == "" || resultWorkers < 3 {
+		dbHostFlag == "" || dbPortFlag == 0 || dbNameFlag == "" || resultWorkers < 3 {
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -70,6 +72,7 @@ func main() {
 			DBUser: dbUserFlag,
 			DBPass: dbPassFlag,
 			DBHost: dbHostFlag,
+			DBPort: dbPortFlag,
 			DBName: dbNameFlag,
 		},
 		QueueHost:     queueHostFlag,
@@ -77,7 +80,7 @@ func main() {
 	}
 
 	if dbSetupFlag {
-		fmt.Println(conf.Database.DBUser, conf.Database.DBPass, conf.Database.DBHost, conf.Database.DBName)
+		fmt.Println(conf.Database.DBUser, conf.Database.DBPass, conf.Database.DBHost, conf.Database.DBPort, conf.Database.DBName)
 		db, err := NewDatabase(conf)
 		if err != nil {
 			log.Fatalln(err)
