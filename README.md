@@ -22,9 +22,11 @@ The aion API is broken up into a number of endpoints for managing aion.
 | GET    | /api/v1/job      | Get a list of all jobs
 | POST   | /api/v1/job      | Add a new job
 | GET    | /api/v1/job/:id  | Get details for a given job ID
+| DELETE | /api/v1/job/:id  | Delete a job
 | GET    | /api/v1/task     | Get a list of all tasks
 | POST   | /api/v1/task     | Add a new task
 | GET    | /api/v1/task/:id | Get details for a given task ID
+| DELETE | /api/v1/task/:id | Delete a task
 
 * more to come...
 
