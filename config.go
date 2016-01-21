@@ -3,6 +3,7 @@ package main
 // DBConf holds the given values for the database
 type DBConf struct {
 	DBHost string
+    DBPort int
 	DBUser string
 	DBPass string
 	DBName string
