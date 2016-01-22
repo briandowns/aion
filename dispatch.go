@@ -13,20 +13,18 @@ type Dispatcher struct {
 	Conf         *Config
 	cron         *cron.Cron
 	ResultChan   chan []byte
-	NewJobChan   chan Job
 	JobProcChan  chan Job
-	NewTaskChan  chan Task
 	TaskProcChan chan Task
+	SenderChan   chan Sender
 }
 
 // NewDispatcher creates a new refence of type Dispatcher
 func NewDispatcher(conf *Config) *Dispatcher {
 	return &Dispatcher{
-		Conf:        conf,
-		cron:        cron.New(),
-		ResultChan:  make(chan []byte),
-		NewJobChan:  make(chan Job),
-		NewTaskChan: make(chan Task),
+		Conf:       conf,
+		cron:       cron.New(),
+		ResultChan: make(chan []byte),
+		SenderChan: make(chan Sender),
 	}
 }
 
@@ -71,10 +69,10 @@ func (d *Dispatcher) Run() error {
 
 	for {
 		select {
-		case job := <-d.NewJobChan:
-			db.AddJob(job)
-		case task := <-d.NewTaskChan:
-			db.AddTask(task)
+		case data := <-d.SenderChan:
+			if err := data.Send(); err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }
