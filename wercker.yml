@@ -18,10 +18,12 @@ services:
     # http://devcenter.wercker.com/docs/services/mongodb.html
     - mysql
       env:
-        Host: WERCKER_MYSQL_HOST
-        Port: WERCKER_MYSQL_PORT
-        Username: WERCKER_MYSQL_USERNAME
-        Password: WERCKER_MYSQL_PASSWORD
+        WERCKER_MYSQL_USERNAME: aion
+        WERCKER_MYSQL_PASSWORD: aion
+        WERCKER_MYSQL_HOST: $$HOST$$
+        WERCKER_MYSQL_PORT: 3306
+        WERCKER_MYSQL_DATABASE: aion
+        WERCKER_MYSQL_URL: mysql://aion:aion@$$HOST$$:3306/aion
 build:
   # The steps that will be executed on build
   # Steps make up the actions in your pipeline
