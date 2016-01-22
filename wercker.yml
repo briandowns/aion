@@ -17,10 +17,11 @@ services:
     # - mongodb
     # http://devcenter.wercker.com/docs/services/mongodb.html
     - mysql
-      Host: WERCKER_MYSQL_HOST
-      Port: WERCKER_MYSQL_PORT
-      Username: WERCKER_MYSQL_USERNAME
-      Password: WERCKER_MYSQL_PASSWORD
+      env:
+        Host: WERCKER_MYSQL_HOST
+        Port: WERCKER_MYSQL_PORT
+        Username: WERCKER_MYSQL_USERNAME
+        Password: WERCKER_MYSQL_PASSWORD
 build:
   # The steps that will be executed on build
   # Steps make up the actions in your pipeline
