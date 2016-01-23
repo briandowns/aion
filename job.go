@@ -2,6 +2,8 @@ package main
 
 import (
 	"sync"
+
+	"github.com/briandowns/aion/models"
 )
 
 // JobStatuser
@@ -12,16 +14,9 @@ type JobStatuser interface {
 
 // JobStatus holds the
 type JobStatus struct {
-	Job
+	models.Job
 	Status bool
 	sync.Mutex
-}
-
-// NewJob creates a new reference to Job
-func (j *Job) NewJob(name string) *Job {
-	return &Job{
-		Name: name,
-	}
 }
 
 // Enable enables an unactive job

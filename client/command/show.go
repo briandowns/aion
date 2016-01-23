@@ -1,7 +1,9 @@
 package command
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 
 	"github.com/briandowns/aion/client/config"
@@ -35,6 +37,10 @@ func (s *Show) Run(args []string) int {
 	switch args[0] {
 	case "config":
 		s.showConfig()
+	case "jobs":
+		s.GetAll(args[0])
+	case "tasks":
+		s.GetAll(args[0])
 	default:
 		fmt.Print("ERROR: invalid option for show\n\n")
 		return 1
@@ -75,4 +81,44 @@ Options:
 // Synopsis provides a brief description of the command
 func (s *Show) Synopsis() string {
 	return "Show an Aion resource"
+}
+
+// Getter
+type Getter interface {
+	GetAll() ([]Resource, error)
+}
+
+// Resource
+type Resource interface {
+	Getter
+}
+
+// GetAll gets all entries for a given resource
+func (s *Show) GetAll(resource string) ([]Resource, error) {
+	response, err := http.Get(s.config.Endpoint + "/api/v1/" + resource)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	var r Resource
+	if err := json.NewDecoder(response.Body).Decode(&r); err != nil {
+		return nil, err
+	}
+
+	fmt.Println(r)
+	/*w := utils.NewTabWriter()
+
+	fmt.Fprintf(w, "\nHealth\tStatus\tName\tShards\tReplicas\tDocuments\tSize")
+	fmt.Fprintf(w, "\n----------\t----------\t----------\t----------\t----------\t----------\t----------\n")
+
+	for _, i := range r {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\t%d\t%d\n",
+			i.Health, i.Status, i.Name, i.Shards, i.Replicas, i.Docs.Deleted, i.Store.Size)
+	}
+
+	fmt.Fprintf(w, "\n")
+	w.Flush()*/
+
+	return nil, nil
 }
