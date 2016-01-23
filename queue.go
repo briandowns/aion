@@ -32,9 +32,6 @@ func QProducerConn() (*nsq.Producer, error) {
 	return nsq.NewProducer(fmt.Sprintf("%s:4150", queueHostFlag), nsqConfig)
 }
 
-func QConnect() error {
-	return q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
-}
 // Add adds a job to the database
 func (j *Job) Add() error {
 	wg := &sync.WaitGroup{}
@@ -56,7 +53,7 @@ func (j *Job) Add() error {
 		wg.Done()
 		return nil
 	}))
-	err = q.ConnectToNSQD("192.168.99.100:4150")
+	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
 	if err != nil {
 		log.Panic("Could not connect")
 	}
