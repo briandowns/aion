@@ -35,6 +35,8 @@ var jobRegistryChan = make(chan Job)
 var taskRegistryChan = make(chan Task)
 var signalsChan = make(chan os.Signal, 1)
 
+var Conf *Config
+
 func init() {
 	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
 	flag.StringVar(&portFlag, "port", ":9898", "port to run the server")
@@ -67,7 +69,7 @@ func main() {
 	}
 
 	// assign
-	Conf := &Config{
+	Conf = &Config{
 		Database: DBConf{
 			DBUser: dbUserFlag,
 			DBPass: dbPassFlag,
