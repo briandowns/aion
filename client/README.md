@@ -5,6 +5,10 @@
 * version
 * show
 
+## Installation
+
+`go install github.com/briandowns/aion/client`
+
 ## Examples
 
 * `aion-cli show config`
