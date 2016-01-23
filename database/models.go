@@ -10,6 +10,8 @@ import (
 	"github.com/bitly/go-nsq"
 )
 
+var nsqConfig = nsq.NewConfig()
+
 // Job holds what's needs to represent a job
 type Job struct {
 	ID    int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
