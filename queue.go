@@ -32,12 +32,15 @@ func QProducerConn() (*nsq.Producer, error) {
 	return nsq.NewProducer(fmt.Sprintf("%s:4150", queueHostFlag), nsqConfig)
 }
 
+func QConnect() error {
+	return q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
+}
 // Add adds a job to the database
 func (j *Job) Add() error {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	q, err := nsq.NewConsumer("new_task", "add", nsqConfig)
+	q, err := nsq.NewConsumer("new_job", "add", nsqConfig)
 	if err != nil {
 		return err
 	}
@@ -79,6 +82,36 @@ func (j *Job) Send() error {
 		return err
 	}
 	w.Stop()
+
+	return nil
+}
+
+// Add adds a task to the database
+func (t *Task) Add() error {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	q, err := nsq.NewConsumer("new_task", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &t)
+		log.Printf("Got a message: %+v", j)
+		db, err := NewDatabase(Conf)
+		if err != nil {
+			log.Println(err)
+		}
+		db.AddTask(*t)
+		wg.Done()
+		return nil
+	}))
+	err = q.ConnectToNSQD("192.168.99.100:4150")
+	if err != nil {
+		log.Panic("Could not connect")
+	}
+	wg.Wait()
 
 	return nil
 }
