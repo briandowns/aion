@@ -5,21 +5,23 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/briandowns/aion/config"
+	"github.com/briandowns/aion/database"
 	"github.com/robfig/cron"
 )
 
 // Dispatcher holds the values that comprise the Aion dispatcher
 type Dispatcher struct {
-	Conf         *Config
+	Conf         *config.Config
 	cron         *cron.Cron
 	ResultChan   chan []byte
-	JobProcChan  chan Job
-	TaskProcChan chan Task
+	JobProcChan  chan database.Job
+	TaskProcChan chan database.Task
 	SenderChan   chan Sender
 }
 
 // NewDispatcher creates a new refence of type Dispatcher
-func NewDispatcher(conf *Config) *Dispatcher {
+func NewDispatcher(conf *config.Config) *Dispatcher {
 	return &Dispatcher{
 		Conf:       conf,
 		cron:       cron.New(),
@@ -41,7 +43,7 @@ func (d *Dispatcher) generateTaskFunc(cmd string, args []string) (func(), error)
 
 // AddExistingTasks adds active tasks from the database to the scheduler
 func (d *Dispatcher) AddExistingTasks() {
-	db, err := NewDatabase(d.Conf)
+	db, err := database.NewDatabase(d.Conf)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -59,7 +61,7 @@ func (d *Dispatcher) AddExistingTasks() {
 
 // Run starts the dispatcher
 func (d *Dispatcher) Run() error {
-	db, err := NewDatabase(d.Conf)
+	db, err := database.NewDatabase(d.Conf)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -70,7 +72,7 @@ func (d *Dispatcher) Run() error {
 	for {
 		select {
 		case data := <-d.SenderChan:
-			if err := data.Send(); err != nil {
+			if err := data.Send(db); err != nil {
 				log.Println(err)
 			}
 		}

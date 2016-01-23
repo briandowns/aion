@@ -19,6 +19,18 @@ const (
 // Commands is the mapping of all the available wasteband commands.
 var Commands map[string]cli.CommandFactory
 
+var validCommands = []string{"show", "version"}
+
+// validCommand verifies that the given command is a valid one
+func validCommand(cmd string) bool {
+	for _, command := range validCommands {
+		if cmd == command {
+			return true
+		}
+	}
+	return false
+}
+
 func main() {
 	if retval, err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())

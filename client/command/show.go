@@ -1,11 +1,15 @@
 package command
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 
 	"github.com/briandowns/aion/client/config"
 	"github.com/briandowns/aion/client/utils"
+	"github.com/briandowns/aion/database"
+
 	"github.com/fatih/flags"
 	"github.com/mitchellh/cli"
 )
@@ -35,8 +39,10 @@ func (s *Show) Run(args []string) int {
 	switch args[0] {
 	case "config":
 		s.showConfig()
+	case "jobs":
+		s.AllJobs()
 	default:
-		fmt.Print("ERROR: invalid option for show\n\n")
+		fmt.Print("ERROR: invalid option for show\n")
 		return 1
 	}
 
@@ -68,11 +74,46 @@ func (s *Show) Help() string {
 Options:
   jobs               Display all jobs
   tasks              Display all tasks
-  
 `
 }
 
 // Synopsis provides a brief description of the command
 func (s *Show) Synopsis() string {
 	return "Show an Aion resource"
+}
+
+// JobsResponse holds the response from the API
+type JobsResponse struct {
+	Jobs []database.Job `json:"jobs"`
+}
+
+// TasksResponse holds the response from the API
+type TasksResponse struct {
+	Jobs []database.Task `json:"tasks"`
+}
+
+// AllJobs gets all job entries
+func (s *Show) AllJobs() {
+	response, err := http.Get("http://" + s.config.Endpoint + "/api/v1/job")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer response.Body.Close()
+
+	var r JobsResponse
+	if err := json.NewDecoder(response.Body).Decode(&r); err != nil {
+		fmt.Println(err)
+	}
+
+	w := utils.NewTabWriter()
+
+	fmt.Fprintf(w, "\nName\tDescription\tTasks")
+	fmt.Fprintf(w, "\n----------\t----------\t----------\n")
+
+	for _, i := range r.Jobs {
+		fmt.Fprintf(w, "%s\t%s\t%s\n", i.Name, i.Desc, i.Tasks)
+	}
+
+	fmt.Fprintf(w, "\n")
+	w.Flush()
 }

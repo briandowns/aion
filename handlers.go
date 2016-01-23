@@ -11,6 +11,9 @@ import (
 	"github.com/gorhill/cronexpr"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
+
+	"github.com/briandowns/aion/config"
+	"github.com/briandowns/aion/database"
 )
 
 // Top Level/Primary Routes
@@ -57,9 +60,9 @@ func FrontendHandler() http.HandlerFunc {
 }
 
 // JobsRouteHandler provides the handler for jobs data
-func JobsRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func JobsRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -71,7 +74,7 @@ func JobsRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 // NewJobRouteHandler creates a new job with the POST'd data
 func NewJobRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var nj Job
+		var nj database.Job
 
 		decoder := json.NewDecoder(r.Body)
 		err := decoder.Decode(&nj)
@@ -87,12 +90,12 @@ func NewJobRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handler
 		}
 
 		dispatcher.SenderChan <- &nj
-		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
+		ren.JSON(w, http.StatusOK, map[string]database.Job{"job": nj})
 	}
 }
 
 // JobByIDRouteHandler provides the handler for jobs data for the given ID
-func JobByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func JobByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		jid := vars["id"]
@@ -102,7 +105,7 @@ func JobByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 			log.Println(err)
 		}
 
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -117,7 +120,7 @@ func JobByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 }
 
 // JobDeleteByIDRouteHandler deletes the job data for the given ID
-func JobDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func JobDeleteByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		jid := vars["id"]
@@ -125,7 +128,7 @@ func JobDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFun
 		if err != nil {
 			log.Println(err)
 		}
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -138,9 +141,9 @@ func JobDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFun
 }
 
 // TasksRouteHandler provides the handler for tasks data
-func TasksRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func TasksRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -152,7 +155,7 @@ func TasksRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 // NewTaskRouteHandler creates a new task with the POST'd data
 func NewTaskRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var nt Task
+		var nt database.Task
 
 		decoder := json.NewDecoder(r.Body)
 		err := decoder.Decode(&nt)
@@ -185,12 +188,12 @@ func NewTaskRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handle
 		}
 
 		dispatcher.SenderChan <- &nt
-		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
+		ren.JSON(w, http.StatusOK, map[string]database.Task{"task": nt})
 	}
 }
 
 // TaskByIDRouteHandler provides the handler for tasks data for the given ID
-func TaskByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func TaskByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		tid := vars["id"]
@@ -200,7 +203,7 @@ func TaskByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 			log.Println(err)
 		}
 
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -215,7 +218,7 @@ func TaskByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
 }
 
 // TaskDeleteByIDRouteHandler deletes the task data for the given ID
-func TaskDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func TaskDeleteByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		tid := vars["id"]
@@ -223,7 +226,7 @@ func TaskDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFu
 		if err != nil {
 			log.Println(err)
 		}
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -236,9 +239,9 @@ func TaskDeleteByIDRouteHandler(ren *render.Render, conf *Config) http.HandlerFu
 }
 
 // UsersRouteHandler provides the handler for users data
-func UsersRouteHandler(ren *render.Render, conf *Config) http.HandlerFunc {
+func UsersRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		db, err := NewDatabase(conf)
+		db, err := database.NewDatabase(conf)
 		if err != nil {
 			log.Println(err)
 		}

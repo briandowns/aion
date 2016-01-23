@@ -10,6 +10,9 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 
+	"github.com/briandowns/aion/config"
+	"github.com/briandowns/aion/database"
+
 	"github.com/codegangsta/negroni"
 	"github.com/goincremental/negroni-sessions"
 	"github.com/goincremental/negroni-sessions/cookiestore"
@@ -31,11 +34,12 @@ var (
 	resultWorkers int
 )
 
-var jobRegistryChan = make(chan Job)
-var taskRegistryChan = make(chan Task)
+var jobRegistryChan = make(chan database.Job)
+var taskRegistryChan = make(chan database.Task)
 var signalsChan = make(chan os.Signal, 1)
 
-var Conf *Config
+// Conf holds the current configuration
+var Conf *config.Config
 
 func init() {
 	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
@@ -69,8 +73,8 @@ func main() {
 	}
 
 	// assign
-	Conf = &Config{
-		Database: DBConf{
+	Conf = &config.Config{
+		Database: config.DBConf{
 			DBUser: dbUserFlag,
 			DBPass: dbPassFlag,
 			DBHost: dbHostFlag,
@@ -83,7 +87,7 @@ func main() {
 
 	if dbSetupFlag {
 		fmt.Println(Conf.Database.DBUser, Conf.Database.DBPass, Conf.Database.DBHost, Conf.Database.DBPort, Conf.Database.DBName)
-		db, err := NewDatabase(Conf)
+		db, err := database.NewDatabase(Conf)
 		if err != nil {
 			log.Fatalln(err)
 		}
