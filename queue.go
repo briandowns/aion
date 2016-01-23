@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"sync"
 
 	"github.com/bitly/go-nsq"
 )
@@ -20,9 +22,44 @@ type Sender interface {
 	Send() error
 }
 
+// Adder is an interface for adding data to the database
+type Adder interface {
+	Add() error
+}
+
 // QProducerConn connects to NSQ for sending data
 func QProducerConn() (*nsq.Producer, error) {
 	return nsq.NewProducer(fmt.Sprintf("%s:4150", queueHostFlag), nsqConfig)
+}
+
+// Add adds a job to the database
+func (j *Job) Add() error {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	q, err := nsq.NewConsumer("new_task", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &j)
+		log.Printf("Got a message: %+v", j)
+		db, err := NewDatabase(Conf)
+		if err != nil {
+			log.Println(err)
+		}
+		db.AddJob(*j)
+		wg.Done()
+		return nil
+	}))
+	err = q.ConnectToNSQD("192.168.99.100:4150")
+	if err != nil {
+		log.Panic("Could not connect")
+	}
+	wg.Wait()
+
+	return nil
 }
 
 // Send sends a new job to NSQ
