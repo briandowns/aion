@@ -4,18 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"sync"
+
+	"github.com/briandowns/aion/database"
 
 	"github.com/bitly/go-nsq"
 )
 
 var (
-	newJobChan    = make(chan *models.Job)
-	newTaskChan   = make(chan *models.Task)
-	newResultChan = make(chan *models.Result)
+	newJobChan    = make(chan *database.Job)
+	newTaskChan   = make(chan *database.Task)
+	newResultChan = make(chan *database.Result)
 )
-
-var nsqConfig = nsq.NewConfig()
 
 // Sender is an interface for sending data to NSQ
 type Sender interface {

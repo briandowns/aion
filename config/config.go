@@ -1,9 +1,9 @@
-package main
+package config
 
 // DBConf holds the given values for the database
 type DBConf struct {
 	DBHost string
-    DBPort int
+	DBPort int
 	DBUser string
 	DBPass string
 	DBName string

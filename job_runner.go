@@ -3,14 +3,14 @@ package main
 import (
 	"log"
 
-	"github.com/briandowns/aion/models"
+	"github.com/briandowns/aion/database"
 )
 
 // JobManager
 type JobManager struct {
 	Conf     *Config
-	JobChan  chan models.Job
-	TaskChan chan models.Task
+	JobChan  chan database.Job
+	TaskChan chan database.Task
 	ExitChan chan struct{}
 }
 
@@ -18,8 +18,8 @@ type JobManager struct {
 func NewJobManager(conf *Config) *JobManager {
 	return &JobManager{
 		Conf:     conf,
-		JobChan:  make(chan models.Job),
-		TaskChan: make(chan models.Task),
+		JobChan:  make(chan database.Job),
+		TaskChan: make(chan database.Task),
 		ExitChan: make(chan struct{}),
 	}
 }

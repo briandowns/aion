@@ -10,7 +10,7 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 
-	"github.com/briandowns/aion/models"
+	"github.com/briandowns/aion/database"
 
 	"github.com/codegangsta/negroni"
 	"github.com/goincremental/negroni-sessions"
@@ -33,8 +33,8 @@ var (
 	resultWorkers int
 )
 
-var jobRegistryChan = make(chan models.Job)
-var taskRegistryChan = make(chan models.Task)
+var jobRegistryChan = make(chan database.Job)
+var taskRegistryChan = make(chan database.Task)
 var signalsChan = make(chan os.Signal, 1)
 
 // Conf holds the current configuration

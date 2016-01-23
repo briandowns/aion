@@ -1,12 +1,13 @@
-package main
+package database
 
 import (
 	"fmt"
 	"log"
 
-	"github.com/briandowns/aion/models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+
+	"github.com/briandowns/aion/config"
 )
 
 // DataAccess
@@ -18,12 +19,12 @@ type DataAccess interface {
 
 // Database holds db conf and a connection
 type Database struct {
-	Conf *Config
+	Conf *config.Config
 	Conn *gorm.DB
 }
 
 // NewDatabase creates a new Database object
-func NewDatabase(conf *Config) (*Database, error) {
+func NewDatabase(conf *config.Config) (*Database, error) {
 	d := &Database{
 		Conf: conf,
 	}
@@ -47,48 +48,48 @@ func (d *Database) connect() error {
 }
 
 // AddJob adds a new job record to the database
-func (d *Database) AddJob(j models.Job) {
+func (d *Database) AddJob(j Job) {
 	d.Conn.NewRecord(j)
 	d.Conn.Create(&j)
 	d.Conn.NewRecord(j)
 }
 
 // GetJobs gets all jobs from the database
-func (d *Database) GetJobs() []models.Job {
-	var data []models.Job
+func (d *Database) GetJobs() []Job {
+	var data []Job
 	d.Conn.Find(&data)
 	return data
 }
 
 // GetJobByID gets the job for the given ID
-func (d *Database) GetJobByID(id int) []models.Job {
-	var data []models.Job
+func (d *Database) GetJobByID(id int) []Job {
+	var data []Job
 	d.Conn.Where("id = ?", id).Find(&data)
 	return data
 }
 
 // DeleteJob deletes a task
 func (d *Database) DeleteJob(id int) {
-	d.Conn.Delete(&models.Job{ID: id})
+	d.Conn.Delete(&Job{ID: id})
 }
 
 // AddTask adds a new task record to the database
-func (d *Database) AddTask(t models.Task) {
+func (d *Database) AddTask(t Task) {
 	d.Conn.NewRecord(t)
 	d.Conn.Create(&t)
 	d.Conn.NewRecord(t)
 }
 
 // GetTasks gets all tasks from the database
-func (d *Database) GetTasks() []models.Task {
-	var data []models.Task
+func (d *Database) GetTasks() []Task {
+	var data []Task
 	d.Conn.Find(&data)
 	return data
 }
 
 // GetTaskByID gets the task for the given ID
-func (d *Database) GetTaskByID(id int) []models.Task {
-	var data []models.Task
+func (d *Database) GetTaskByID(id int) []Task {
+	var data []Task
 	d.Conn.Where("id = ?", id).Find(&data)
 	return data
 }
@@ -99,15 +100,15 @@ func (d *Database) DeleteTask(id int) {
 }
 
 // GetUsers gets all users from the database
-func (d *Database) GetUsers() []models.User {
-	var data []models.User
+func (d *Database) GetUsers() []User {
+	var data []User
 	d.Conn.Find(&data)
 	return data
 }
 
 // GetUserByID gets the user for the given ID
-func (d *Database) GetUserByID(id int) []models.User {
-	var data []models.User
+func (d *Database) GetUserByID(id int) []User {
+	var data []User
 	d.Conn.Where("id = ?", id).Find(&data)
 	return data
 }
@@ -118,14 +119,14 @@ func (d *Database) DeleteUser(id int) {
 }
 
 // GetPermissions gets all permissions from the database
-func (d *Database) GetPermissions() []models.Permission {
-	var data []models.Permission
+func (d *Database) GetPermissions() []Permission {
+	var data []Permission
 	d.Conn.Find(&data)
 	return data
 }
 
 // GetPermissionByID gets the user for the given ID
-func (d *Database) GetPermissionByID(id int) []models.Permission {
+func (d *Database) GetPermissionByID(id int) []Permission {
 	var data []Permission
 	d.Conn.Where("id = ?", id).Find(&data)
 	return data
@@ -133,19 +134,19 @@ func (d *Database) GetPermissionByID(id int) []models.Permission {
 
 // DeletePermission deletes a task
 func (d *Database) DeletePermission(id int) {
-	d.Conn.Delete(&models.Permission{ID: id})
+	d.Conn.Delete(&Permission{ID: id})
 }
 
 // GetResults gets all permissions from the database
-func (d *Database) GetResults() []models.Permission {
-	var data []models.Permission
+func (d *Database) GetResults() []Permission {
+	var data []Permission
 	d.Conn.Find(&data)
 	return data
 }
 
 // GetResultByID gets the user for the given ID
-func (d *Database) GetResultByID(id int) []models.Permission {
-	var data []models.Permission
+func (d *Database) GetResultByID(id int) []Permission {
+	var data []Permission
 	d.Conn.Where("id = ?", id).Find(&data)
 	return data
 }

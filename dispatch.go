@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/briandowns/aion/models"
+	"github.com/briandowns/aion/database"
 	"github.com/robfig/cron"
 )
 
@@ -14,8 +14,8 @@ type Dispatcher struct {
 	Conf         *Config
 	cron         *cron.Cron
 	ResultChan   chan []byte
-	JobProcChan  chan models.Job
-	TaskProcChan chan models.Task
+	JobProcChan  chan database.Job
+	TaskProcChan chan database.Task
 	SenderChan   chan Sender
 }
 

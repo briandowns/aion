@@ -2,8 +2,6 @@ package main
 
 import (
 	"sync"
-
-	"github.com/briandowns/aion/models"
 )
 
 // JobStatuser
@@ -14,7 +12,7 @@ type JobStatuser interface {
 
 // JobStatus holds the
 type JobStatus struct {
-	models.Job
+	Job
 	Status bool
 	sync.Mutex
 }
