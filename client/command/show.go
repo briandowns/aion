@@ -66,8 +66,8 @@ func (s *Show) Help() string {
 	return `Usage: aion show <option> <arguments> 
   Show a resource
 Options:
-  job               Display all jobs
-  task              Display all tasks
+  jobs               Display all jobs
+  tasks              Display all tasks
   
 `
 }

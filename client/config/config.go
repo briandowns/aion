@@ -10,7 +10,7 @@ type Configuration struct {
 }
 
 // Load builds a config obj
-func Load(cf string) (*Configuration, error) {
+func Load() (*Configuration, error) {
 	return &Configuration{
 		Endpoint: os.Getenv("AION_ENDPOINT"),
 		Username: os.Getenv("AION_USERNAME"),

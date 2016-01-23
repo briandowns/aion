@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/mitchellh/cli"
+
+	"github.com/briandowns/aion/client/command"
+	"github.com/briandowns/aion/client/config"
 )
 
 const (
@@ -23,24 +27,19 @@ func main() {
 }
 
 func run() (int, error) {
-	conf, err := config.Load(configFile)
+	conf, err := config.Load()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if !conf.HasEndpoint() {
-		fmt.Printf("ERROR: no Elasticsearch endpoint set.\n")
-		return 1, nil
-	}
-
 	c := &cli.CLI{
-		Name:     wastebandName,
-		Version:  wastebandVersion,
+		Name:     aionName,
+		Version:  aionVersion,
 		Args:     os.Args[1:],
-		HelpFunc: cli.BasicHelpFunc(wastebandName),
+		HelpFunc: cli.BasicHelpFunc(aionName),
 		Commands: map[string]cli.CommandFactory{
-			"show":     command.NewShow(conf),
-			"version":  command.NewVersion(wastebandVersion),
+			"show":    command.NewShow(conf),
+			"version": command.NewVersion(aionVersion),
 		},
 	}
 
