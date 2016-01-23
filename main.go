@@ -97,6 +97,8 @@ func main() {
 	// launch the dispatcher
 	go dispatcher.Run()
 
+	go watchForNewJobs()
+
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
 

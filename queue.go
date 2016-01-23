@@ -32,6 +32,54 @@ func QProducerConn() (*nsq.Producer, error) {
 	return nsq.NewProducer(fmt.Sprintf("%s:4150", queueHostFlag), nsqConfig)
 }
 
+func watchForNewJobs() error {
+	q, err := nsq.NewConsumer("new_job", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+	var j *Job
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &j)
+
+		db, err := NewDatabase(Conf)
+		if err != nil {
+			log.Println(err)
+		}
+		db.AddJob(*j)
+		return nil
+	}))
+	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func watchForNewTasks() error {
+	q, err := nsq.NewConsumer("new_task", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+	var t *Task
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &t)
+
+		db, err := NewDatabase(Conf)
+		if err != nil {
+			log.Println(err)
+		}
+		db.AddTask(*t)
+		return nil
+	}))
+	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Add adds a job to the database
 func (j *Job) Add() error {
 	wg := &sync.WaitGroup{}
@@ -55,7 +103,7 @@ func (j *Job) Add() error {
 	}))
 	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
 	if err != nil {
-		log.Panic("Could not connect")
+		return err
 	}
 	wg.Wait()
 
@@ -95,7 +143,7 @@ func (t *Task) Add() error {
 
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		json.Unmarshal(message.Body, &t)
-		log.Printf("Got a message: %+v", j)
+		log.Printf("Got a message: %+v", t)
 		db, err := NewDatabase(Conf)
 		if err != nil {
 			log.Println(err)
@@ -106,7 +154,7 @@ func (t *Task) Add() error {
 	}))
 	err = q.ConnectToNSQD("192.168.99.100:4150")
 	if err != nil {
-		log.Panic("Could not connect")
+		return err
 	}
 	wg.Wait()
 
