@@ -42,6 +42,30 @@ $ cd aion
 $ make dep
 ```
 
+## Statistics
+
+You can get statistics from Aion simply by going to the `/api/v1/admin/api/stats` endpoint.  This will yield the following results.  There's intent to ahve these and other statistics gathered and stored either in the MySQL database or another datastore of the user's choosing.
+
+```javascript
+{
+	pid: 50415,
+	uptime: "46.357446503s",
+	uptime_sec: 46.357446503,
+	time: "2016-01-23 14:56:49.683847989 -0700 MST",
+	unixtime: 1453586209,
+	status_code_count: { },
+	total_status_code_count: {
+	200: 6
+},
+	count: 0,
+	total_count: 6,
+	total_response_time: "1.591559ms",
+	total_response_time_sec: 0.0015915590000000002,
+	average_response_time: "265.259Âµs",
+	average_response_time_sec: 0.000265259
+}
+```
+
 ## Contributing
 
 * Put in an issue

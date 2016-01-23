@@ -17,6 +17,7 @@ import (
 	"github.com/goincremental/negroni-sessions"
 	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/gorilla/mux"
+	"github.com/thoas/stats"
 	"github.com/unrolled/render"
 )
 
@@ -117,6 +118,8 @@ func main() {
 
 	n.Use(sessions.Sessions("session", store))
 
+	statsMiddleware := stats.New()
+
 	// create a router to handle the requests coming in to our endpoints
 	router := mux.NewRouter()
 
@@ -147,6 +150,9 @@ func main() {
 	// New Tasks Route
 	router.HandleFunc(TasksPath, NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
 
+	router.HandleFunc(APIStats, AdminAionAPIServerStats(statsMiddleware)).Methods("GET")
+
+	n.Use(statsMiddleware)
 	n.UseHandler(router)
 	n.Run(portFlag)
 }

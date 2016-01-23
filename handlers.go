@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorhill/cronexpr"
 	"github.com/gorilla/mux"
+	"github.com/thoas/stats"
 	"github.com/unrolled/render"
 
 	"github.com/briandowns/aion/config"
@@ -33,6 +34,9 @@ const (
 
 	// UserPath is the path to manage users
 	UserPath = APIBase + "user"
+
+	// AdminPath is the path to manage Aion
+	AdminPath = APIBase + "admin"
 )
 
 var (
@@ -44,6 +48,8 @@ var (
 
 	// UserByID is the path to get specific user data
 	UserByID = UserPath + "/{id}"
+
+	APIStats = AdminPath + "/api/stats"
 )
 
 // ErrNoJobsFound given when a job isn't found
@@ -247,5 +253,20 @@ func UsersRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc
 		}
 		defer db.Conn.Close()
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"tasks": db.GetUsers()})
+	}
+}
+
+// AdminAionAPIServerStats returns Aion API server statistics
+func AdminAionAPIServerStats(mw *stats.Stats) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		stats := mw.Data()
+
+		b, err := json.Marshal(stats)
+		if err != nil {
+			log.Println(err)
+		}
+
+		w.Write(b)
 	}
 }
