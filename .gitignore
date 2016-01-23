@@ -36,6 +36,9 @@ aion
 # frontend tmp directory
 public/app/.tmp/
 
-# docker slam binaries
+# docker aion binaries
 docker/dev/aion
 docker/prod/aion
+
+# Aion CLI binary
+client/aion-cli

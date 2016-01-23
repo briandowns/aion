@@ -8,6 +8,8 @@ import (
 
 	"github.com/briandowns/aion/client/config"
 	"github.com/briandowns/aion/client/utils"
+	"github.com/briandowns/aion/database"
+
 	"github.com/fatih/flags"
 	"github.com/mitchellh/cli"
 )
@@ -38,11 +40,9 @@ func (s *Show) Run(args []string) int {
 	case "config":
 		s.showConfig()
 	case "jobs":
-		s.GetAll(args[0])
-	case "tasks":
-		s.GetAll(args[0])
+		s.AllJobs()
 	default:
-		fmt.Print("ERROR: invalid option for show\n\n")
+		fmt.Print("ERROR: invalid option for show\n")
 		return 1
 	}
 
@@ -74,7 +74,6 @@ func (s *Show) Help() string {
 Options:
   jobs               Display all jobs
   tasks              Display all tasks
-  
 `
 }
 
@@ -83,42 +82,38 @@ func (s *Show) Synopsis() string {
 	return "Show an Aion resource"
 }
 
-// Getter
-type Getter interface {
-	GetAll() ([]Resource, error)
+// JobsResponse holds the response from the API
+type JobsResponse struct {
+	Jobs []database.Job `json:"jobs"`
 }
 
-// Resource
-type Resource interface {
-	Getter
+// TasksResponse holds the response from the API
+type TasksResponse struct {
+	Jobs []database.Task `json:"tasks"`
 }
 
-// GetAll gets all entries for a given resource
-func (s *Show) GetAll(resource string) ([]Resource, error) {
-	response, err := http.Get(s.config.Endpoint + "/api/v1/" + resource)
+// AllJobs gets all job entries
+func (s *Show) AllJobs() {
+	response, err := http.Get("http://" + s.config.Endpoint + "/api/v1/job")
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
 	}
 	defer response.Body.Close()
 
-	var r Resource
+	var r JobsResponse
 	if err := json.NewDecoder(response.Body).Decode(&r); err != nil {
-		return nil, err
+		fmt.Println(err)
 	}
 
-	fmt.Println(r)
-	/*w := utils.NewTabWriter()
+	w := utils.NewTabWriter()
 
-	fmt.Fprintf(w, "\nHealth\tStatus\tName\tShards\tReplicas\tDocuments\tSize")
-	fmt.Fprintf(w, "\n----------\t----------\t----------\t----------\t----------\t----------\t----------\n")
+	fmt.Fprintf(w, "\nName\tDescription\tTasks")
+	fmt.Fprintf(w, "\n----------\t----------\t----------\n")
 
-	for _, i := range r {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\t%d\t%d\n",
-			i.Health, i.Status, i.Name, i.Shards, i.Replicas, i.Docs.Deleted, i.Store.Size)
+	for _, i := range r.Jobs {
+		fmt.Fprintf(w, "%s\t%s\t%s\n", i.Name, i.Desc, i.Tasks)
 	}
 
 	fmt.Fprintf(w, "\n")
-	w.Flush()*/
-
-	return nil, nil
+	w.Flush()
 }
