@@ -3,19 +3,20 @@ package main
 import (
 	"log"
 
+	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
 )
 
 // JobManager
 type JobManager struct {
-	Conf     *Config
+	Conf     *config.Config
 	JobChan  chan database.Job
 	TaskChan chan database.Task
 	ExitChan chan struct{}
 }
 
-// NewJobManager
-func NewJobManager(conf *Config) *JobManager {
+// NewJobManager creates a new job manager
+func NewJobManager(conf *config.Config) *JobManager {
 	return &JobManager{
 		Conf:     conf,
 		JobChan:  make(chan database.Job),
@@ -24,9 +25,9 @@ func NewJobManager(conf *Config) *JobManager {
 	}
 }
 
-// Run
+// Run runs the job manager
 func (j *JobManager) Run() {
-	db, err := NewDatabase(j.Conf)
+	db, err := database.NewDatabase(j.Conf)
 	if err != nil {
 		log.Fatalln(err)
 	}

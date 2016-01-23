@@ -16,19 +16,16 @@ var (
 	newResultChan = make(chan *database.Result)
 )
 
+var nsqConfig = nsq.NewConfig()
+
 // Sender is an interface for sending data to NSQ
 type Sender interface {
-	Send() error
+	Send(db *database.Database) error
 }
 
 // Adder is an interface for adding data to the database
 type Adder interface {
 	Add() error
-}
-
-// QProducerConn connects to NSQ for sending data
-func QProducerConn() (*nsq.Producer, error) {
-	return nsq.NewProducer(fmt.Sprintf("%s:4150", queueHostFlag), nsqConfig)
 }
 
 func watchForNewJobs() error {
@@ -37,12 +34,12 @@ func watchForNewJobs() error {
 		return err
 	}
 
-	var j *Job
+	var j *database.Job
 
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		json.Unmarshal(message.Body, &j)
 
-		db, err := NewDatabase(Conf)
+		db, err := database.NewDatabase(Conf)
 		if err != nil {
 			log.Println(err)
 		}
@@ -62,11 +59,11 @@ func watchForNewTasks() error {
 	if err != nil {
 		return err
 	}
-	var t *Task
+	var t *database.Task
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		json.Unmarshal(message.Body, &t)
 
-		db, err := NewDatabase(Conf)
+		db, err := database.NewDatabase(Conf)
 		if err != nil {
 			log.Println(err)
 		}

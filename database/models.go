@@ -28,7 +28,7 @@ func (j *Job) NewJob(name string) *Job {
 }
 
 // Add adds a job to the database
-func (j *Job) Add() error {
+func (j *Job) Add(db *Database) error {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
@@ -40,15 +40,11 @@ func (j *Job) Add() error {
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		json.Unmarshal(message.Body, &j)
 		log.Printf("Got a message: %+v", j)
-		db, err := NewDatabase(Conf)
-		if err != nil {
-			log.Println(err)
-		}
 		db.AddJob(*j)
 		wg.Done()
 		return nil
 	}))
-	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
+	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", db.Conf.QueueHost))
 	if err != nil {
 		return err
 	}
@@ -58,8 +54,8 @@ func (j *Job) Add() error {
 }
 
 // Send sends a new job to NSQ
-func (j *Job) Send() error {
-	w, err := QProducerConn()
+func (j *Job) Send(db *Database) error {
+	w, err := nsq.NewProducer(fmt.Sprintf("%s:4150", db.Conf.QueueHost), nsqConfig)
 	if err != nil {
 		return nil
 	}
@@ -89,7 +85,7 @@ type Task struct {
 }
 
 // Add adds a task to the database
-func (t *Task) Add() error {
+func (t *Task) Add(db *Database) error {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
@@ -101,10 +97,6 @@ func (t *Task) Add() error {
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		json.Unmarshal(message.Body, &t)
 		log.Printf("Got a message: %+v", t)
-		db, err := NewDatabase(Conf)
-		if err != nil {
-			log.Println(err)
-		}
 		db.AddTask(*t)
 		wg.Done()
 		return nil
@@ -119,8 +111,8 @@ func (t *Task) Add() error {
 }
 
 // Send sends a new task to NSQ
-func (t *Task) Send() error {
-	w, err := QProducerConn()
+func (t *Task) Send(db *Database) error {
+	w, err := nsq.NewProducer(fmt.Sprintf("%s:4150", db.Conf.QueueHost), nsqConfig)
 	if err != nil {
 		return nil
 	}
@@ -164,8 +156,8 @@ type Result struct {
 }
 
 // Send sends a new result to NSQ
-func (r *Result) Send() error {
-	w, err := QProducerConn()
+func (r *Result) Send(db *Database) error {
+	w, err := nsq.NewProducer(fmt.Sprintf("%s:4150", db.Conf.QueueHost), nsqConfig)
 	if err != nil {
 		return nil
 	}
