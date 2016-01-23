@@ -11,9 +11,9 @@ db:
 nsqlookupd:
   image: nsqio/nsq:v0.3.5
   command: /nsqlookupd
-  expose:
-    - "4160"
-    - "4161"
+  ports:
+    - "4160:4160"
+    - "4161:4161"
 
 nsqadmin:
   image: nsqio/nsq:v0.3.5
@@ -22,7 +22,7 @@ nsqadmin:
     - nsqlookupd
     - nsqd
   ports:
-    - "4171"
+    - "4171:4171"
 
 nsqd:
   image: nsqio/nsq:v0.3.5
@@ -32,8 +32,8 @@ nsqd:
   links:
     - nsqlookupd
   ports:
-    - "4150"
-    - "4151"
+    - "4150:4150"
+    - "4151:4151"
 
 aion:
   image: ubuntu:vivid

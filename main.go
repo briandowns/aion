@@ -35,6 +35,8 @@ var jobRegistryChan = make(chan Job)
 var taskRegistryChan = make(chan Task)
 var signalsChan = make(chan os.Signal, 1)
 
+var Conf *Config
+
 func init() {
 	flag.StringVar(&queueHostFlag, "nsq-host", "", "NSQ server to connect to")
 	flag.StringVar(&portFlag, "port", ":9898", "port to run the server")
@@ -43,7 +45,7 @@ func init() {
 	flag.StringVar(&dbHostFlag, "db-host", "localhost", "database hostname")
 	flag.IntVar(&dbPortFlag, "db-port", 3306, "database port")
 	flag.StringVar(&dbNameFlag, "db-name", "aion", "database name")
-	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB configuration")
+	flag.BoolVar(&dbSetupFlag, "db-setup", false, "intial DB Configuration")
 	flag.IntVar(&resultWorkers, "result-workers", 5, "number of result workers to start")
 }
 
@@ -67,7 +69,7 @@ func main() {
 	}
 
 	// assign
-	conf := &Config{
+	Conf = &Config{
 		Database: DBConf{
 			DBUser: dbUserFlag,
 			DBPass: dbPassFlag,
@@ -80,8 +82,8 @@ func main() {
 	}
 
 	if dbSetupFlag {
-		fmt.Println(conf.Database.DBUser, conf.Database.DBPass, conf.Database.DBHost, conf.Database.DBPort, conf.Database.DBName)
-		db, err := NewDatabase(conf)
+		fmt.Println(Conf.Database.DBUser, Conf.Database.DBPass, Conf.Database.DBHost, Conf.Database.DBPort, Conf.Database.DBName)
+		db, err := NewDatabase(Conf)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -90,10 +92,12 @@ func main() {
 		os.Exit(0)
 	}
 
-	dispatcher := NewDispatcher(conf)
+	dispatcher := NewDispatcher(Conf)
 
 	// launch the dispatcher
 	go dispatcher.Run()
+
+	go watchForNewJobs()
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
@@ -116,25 +120,25 @@ func main() {
 	router.HandleFunc(frontEnd, FrontendHandler()).Methods("GET")
 
 	// Jobs Route
-	router.HandleFunc(JobsPath, JobsRouteHandler(ren, conf)).Methods("GET")
+	router.HandleFunc(JobsPath, JobsRouteHandler(ren, Conf)).Methods("GET")
 
 	// Job By ID Route
-	router.HandleFunc(JobByID, JobByIDRouteHandler(ren, conf)).Methods("GET")
+	router.HandleFunc(JobByID, JobByIDRouteHandler(ren, Conf)).Methods("GET")
 
 	// Job Delete By ID Route
-	router.HandleFunc(TaskByID, JobDeleteByIDRouteHandler(ren, conf)).Methods("DELETE")
+	router.HandleFunc(TaskByID, JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Jobs Route
 	router.HandleFunc(JobsPath, NewJobRouteHandler(ren, dispatcher)).Methods("POST")
 
 	// Tasks Route
-	router.HandleFunc(TasksPath, TasksRouteHandler(ren, conf)).Methods("GET")
+	router.HandleFunc(TasksPath, TasksRouteHandler(ren, Conf)).Methods("GET")
 
 	// Task By ID Route
-	router.HandleFunc(TaskByID, TaskByIDRouteHandler(ren, conf)).Methods("GET")
+	router.HandleFunc(TaskByID, TaskByIDRouteHandler(ren, Conf)).Methods("GET")
 
 	// Task Delete By ID Route
-	router.HandleFunc(TaskByID, TaskDeleteByIDRouteHandler(ren, conf)).Methods("DELETE")
+	router.HandleFunc(TaskByID, TaskDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Tasks Route
 	router.HandleFunc(TasksPath, NewTaskRouteHandler(ren, dispatcher)).Methods("POST")

@@ -86,7 +86,7 @@ func NewJobRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handler
 			return
 		}
 
-		dispatcher.NewJobChan <- nj
+		dispatcher.SenderChan <- &nj
 		ren.JSON(w, http.StatusOK, map[string]Job{"job": nj})
 	}
 }
@@ -184,7 +184,7 @@ func NewTaskRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.Handle
 			return
 		}
 
-		dispatcher.NewTaskChan <- nt
+		dispatcher.SenderChan <- &nt
 		ren.JSON(w, http.StatusOK, map[string]Task{"task": nt})
 	}
 }
