@@ -140,11 +140,6 @@ type User struct {
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
-// GetRole
-func (u *User) GetRole() string {
-	return u.Role
-}
-
 // Permission holds what's needs to represent a permission
 type Permission struct {
 	ID          int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
