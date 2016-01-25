@@ -2,7 +2,7 @@
 
 WIP
 
-aion is a job scheduling engine that utilizes cron syntax.  All tasks are executed in their own goroutine and their results are sent into a queue for another worker to pick-up and process.
+`aion` is a job scheduling engine that utilizes cron syntax.  All tasks are executed in their own goroutine and their results are sent into a queue for another worker to pick-up and process.
 
 * Jobs - Jobs define tasks and potentially an outcome or expected result.
 * Tasks - Tasks define an action to be executed, a potential result, and the schedule it needs to be run.
@@ -14,8 +14,6 @@ $ go install github.com/briandowns/aion
 ```
 
 ## API
-
-The aion API is broken up into a number of endpoints for managing aion.
 
 | Method | Resource                | Description
 | :----- | :-------                | :----------
@@ -33,7 +31,7 @@ The aion API is broken up into a number of endpoints for managing aion.
 
 ## Management 
 
-aion is managed entirely through the API.  A simple web UI is also provided that interacts with the API and also shows visualizations of the data therein.
+`aion` is managed entirely through the API.  A simple web UI is also provided that interacts with the API and also shows visualizations of the data therein.
 
 ## Development
 
