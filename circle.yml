@@ -16,7 +16,7 @@ machine:
 dependencies:
   pre:
     - go get github.com/tools/godep
-    - go get
+    - go get -v -u
   override:
     - go build -v -race
   post:
