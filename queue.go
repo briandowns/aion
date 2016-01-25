@@ -18,11 +18,6 @@ var (
 
 var nsqConfig = nsq.NewConfig()
 
-// Sender is an interface for sending data to NSQ
-type Sender interface {
-	Send(db *database.Database) error
-}
-
 // Adder is an interface for adding data to the database
 type Adder interface {
 	Add() error
