@@ -15,10 +15,10 @@ machine:
 
 dependencies:
   pre:
-    - make get
+    - go get
     - go get github.com/tools/godep
   override:
-    - make build
+    - go build -race
   post:
     # install golint
     - go get github.com/golang/lint/golint
@@ -30,4 +30,4 @@ test:
     - test -z "$(golint ./... | tee /dev/stderr)"
     - test -z "$(gofmt -s -l . | tee /dev/stderr)"
   override:
-    - make test
+    - go test -v -race -cover
