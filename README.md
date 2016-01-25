@@ -2,7 +2,7 @@
 
 ![BuildStatus](https://circleci.com/gh/briandowns/aion.svg?style=shield&circle-token=967d3e629a9d10b4e7db82e2e27ea14bb7369062)
 
-WIP
+*WIP*
 
 `aion` is a job scheduling engine that utilizes cron syntax.  All tasks are executed in their own goroutine and their results are sent into a queue for another worker to pick-up and process.
 
