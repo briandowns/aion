@@ -138,12 +138,6 @@ type User struct {
 	Password  string    `gorm:"column:password" json:"password"`
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
-	Role      string    `gorm:"column:role" json:"role"`
-}
-
-// GetRole
-func (u *User) GetRole() string {
-	return u.Role
 }
 
 // Permission holds what's needs to represent a permission
