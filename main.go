@@ -135,7 +135,7 @@ func main() {
 	router.HandleFunc(controllers.JobByID, controllers.JobByIDRouteHandler(ren, Conf)).Methods("GET")
 
 	// Job Delete By ID Route
-	router.HandleFunc(controllers.TaskByID, controllers.JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
+	router.HandleFunc(controllers.JobByID, controllers.JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Jobs Route
 	router.HandleFunc(controllers.JobsPath, controllers.NewJobRouteHandler(ren, dispatcher)).Methods("POST")
