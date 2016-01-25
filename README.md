@@ -1,6 +1,6 @@
 # Aion
 
-[![BuildStatus](https://circleci.com/gh/briandowns/aion.svg?style=shield&circle-token=967d3e629a9d10b4e7db82e2e27ea14bb7369062)]
+![BuildStatus](https://circleci.com/gh/briandowns/aion.svg?style=shield&circle-token=967d3e629a9d10b4e7db82e2e27ea14bb7369062)
 
 WIP
 
