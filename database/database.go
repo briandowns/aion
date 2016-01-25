@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"log"
 
+	// _ "github.com/go-sql-driver/mysql" is to load the MySQL driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 
 	"github.com/briandowns/aion/config"
 )
 
-// DataAccess
+// DataAccess is an interface
 type DataAccess interface {
 	GetAll(d *Database)
 	GetByID(d *Database, id int)

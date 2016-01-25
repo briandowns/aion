@@ -6,7 +6,7 @@ import (
 	"github.com/briandowns/aion/database"
 )
 
-// JobStatuser
+// JobStatuser is an interface for enabling and disabling jobs
 type JobStatuser interface {
 	Enable()
 	Disable()

@@ -19,7 +19,7 @@ type Show struct {
 	config *config.Configuration
 }
 
-// NewShow creates a new instance of Delete
+// NewShow creates a new CommandFactory for the show subcommand
 func NewShow(conf *config.Configuration) cli.CommandFactory {
 	return func() (cli.Command, error) {
 		return &Show{

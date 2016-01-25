@@ -7,7 +7,7 @@ import (
 	"github.com/briandowns/aion/database"
 )
 
-// JobManager
+// JobManager controlls all jobs
 type JobManager struct {
 	Conf     *config.Config
 	JobChan  chan database.Job

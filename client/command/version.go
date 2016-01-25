@@ -7,12 +7,12 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-// Version
+// Version holds the current version
 type Version struct {
 	version string
 }
 
-// NewVersion
+// NewVersion creates a new CommandFactory for the version subcommand
 func NewVersion(version string) cli.CommandFactory {
 	return func() (cli.Command, error) {
 		return &Version{
