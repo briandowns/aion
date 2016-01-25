@@ -133,10 +133,17 @@ func (t *Task) Send(db *Database) error {
 
 // User holds what's needs to represent a user
 type User struct {
-	ID           int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
-	Username     string `gorm:"column:username" json:"username"`
-	Password     string `gorm:"column:password" json:"password"`
-	PermissionID int    `gorm:"column:permission_id" json:"permission_id"`
+	ID        int       `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
+	Username  string    `gorm:"column:username" json:"username"`
+	Password  string    `gorm:"column:password" json:"password"`
+	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
+	Role      string    `gorm:"column:role" json:"role"`
+}
+
+// GetRole
+func (u *User) GetRole() string {
+	return u.Role
 }
 
 // Permission holds what's needs to represent a permission
