@@ -61,7 +61,7 @@ build: clean
 
 # run the backend unit tests
 test:
-	$(GOTEST) -v -cover github.com/briandowns/aion
+	$(GOTEST) -v -cover ./...
 
 # check for git
 git:
