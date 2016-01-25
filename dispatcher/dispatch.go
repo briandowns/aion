@@ -1,4 +1,4 @@
-package main
+package dispatcher
 
 import (
 	"log"
@@ -7,8 +7,14 @@ import (
 
 	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
+
 	"github.com/robfig/cron"
 )
+
+// Sender is an interface for sending data to NSQ
+type Sender interface {
+	Send(db *database.Database) error
+}
 
 // Dispatcher holds the values that comprise the Aion dispatcher
 type Dispatcher struct {

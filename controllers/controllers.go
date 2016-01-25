@@ -1,10 +1,8 @@
 package controllers
 
-import "errors"
-
 // Top Level/Primary Routes
 var (
-	frontEnd = "/"
+	FrontEnd = "/"
 )
 
 const (
@@ -37,9 +35,3 @@ var (
 	// APIStats is hte path to get API specific data
 	APIStats = UserPath + "api/stats"
 )
-
-// ErrNoJobsFound given when a job isn't found
-var ErrNoJobsFound = errors.New("no jobs found")
-
-// ErrNoTasksFound given when a task isn't found
-var ErrNoTasksFound = errors.New("no tasks found")

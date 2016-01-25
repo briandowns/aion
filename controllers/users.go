@@ -6,7 +6,7 @@ import (
 
 	"github.com/unrolled/render"
 
-	"github.com/briandowns/aion/coniig"
+	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
 )
 

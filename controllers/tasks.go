@@ -6,10 +6,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
+	"github.com/gorhill/cronexpr"
 
 	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
+	"github.com/briandowns/aion/dispatcher"
 )
 
 // TasksRouteHandler provides the handler for tasks data
@@ -25,7 +28,7 @@ func TasksRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc
 }
 
 // NewTaskRouteHandler creates a new task with the POST'd data
-func NewTaskRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
+func NewTaskRouteHandler(ren *render.Render, dispatcher *dispatcher.Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nt database.Task
 

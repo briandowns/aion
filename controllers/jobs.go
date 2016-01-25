@@ -1,14 +1,17 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
-
+	
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
 	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
+	"github.com/briandowns/aion/dispatcher"
 )
 
 // JobsRouteHandler provides the handler for jobs data
@@ -24,7 +27,7 @@ func JobsRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc 
 }
 
 // NewJobRouteHandler creates a new job with the POST'd data
-func NewJobRouteHandler(ren *render.Render, dispatcher *Dispatcher) http.HandlerFunc {
+func NewJobRouteHandler(ren *render.Render, dispatcher *dispatcher.Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var nj database.Job
 
