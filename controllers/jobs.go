@@ -59,6 +59,8 @@ func JobByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFu
 		jobID, err := strconv.Atoi(jid)
 		if err != nil {
 			log.Println(err)
+			ren.JSON(w, 400, map[string]error{"error": err})
+			return
 		}
 
 		db, err := database.NewDatabase(conf)
@@ -94,7 +96,7 @@ func JobDeleteByIDRouteHandler(ren *render.Render, conf *config.Config) http.Han
 		}
 		defer db.Conn.Close()
 
-		db.DeleteTask(jobID)
+		db.DeleteJob(jobID)
 
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": jobID})
 	}

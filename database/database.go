@@ -70,9 +70,7 @@ func (d *Database) GetJobByID(id int) []Job {
 
 // DeleteJob deletes a task
 func (d *Database) DeleteJob(id int) {
-	//db.Where("age = ?", 20).Delete(&User{})
-	//d.Conn.Delete(&Job{ID: id})
-	d.Conn.Where("id = ?", id).Delete(&Job{})
+	d.Conn.Delete(&Job{ID: id})
 }
 
 // AddTask adds a new task record to the database
