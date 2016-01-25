@@ -15,7 +15,6 @@ machine:
 
 dependencies:
   pre:
-    - go get
     - go get github.com/tools/godep
   override:
     - go build -race
