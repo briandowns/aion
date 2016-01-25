@@ -1,0 +1,34 @@
+## Customize the test machine
+machine:
+
+  timezone:
+    America/Phoenix # Set the timezone
+
+  # Override /etc/hosts
+  hosts:
+    circlehost: 127.0.0.1
+
+  # Add some environment variables
+  environment:
+    CIRCLE_ENV: test
+    DATABASE_URL: mysql://ubuntu:@127.0.0.1:5432/circle_test
+
+dependencies:
+  pre:
+    - go get github.com/tools/godep
+    - mkdir -p "$GOPATH/src/$IMPORT_PATH"
+    - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
+  override:
+    - make build
+  post:
+    # install golint
+    - go get github.com/golang/lint/golint
+
+## Customize test commands
+test:
+  pre:
+    - go vet ./...
+    - test -z "$(golint ./... | tee /dev/stderr)"
+    - test -z "$(gofmt -s -l . | tee /dev/stderr)"
+  override:
+    - make test
