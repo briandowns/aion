@@ -15,16 +15,14 @@ machine:
 
 dependencies:
   pre:
-    # let's use MySQL 5.6
-    - sudo apt-add-repository -y 'debhttp://ppa.launchpad.net/ondrej/mysql-experimental/ubuntu precisemain'
-    - sudo apt-get update; sudo DEBIAN_FRONTEND=noninteractive apt-getinstall -y mysql-server-5.6
     - go get github.com/tools/godep
   override:
     - go build -v -race
   post:
     # install golint
     - go get github.com/golang/lint/golint
-    - ./aion -db-user aion -db-pass aion -db-host localhost -db-port 3306 -db-name aion -nsq-host=192.168.99.100 -db-setup
+    - mysql -u ubuntu -e "create database wordpress"
+    - ./aion -db-user ubuntu -db-pass "" -db-host localhost -db-port 3306 -db-name aion -nsq-host=192.168.99.100 -db-setup
 
 ## Customize test commands
 test:
