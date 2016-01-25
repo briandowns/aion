@@ -11,7 +11,9 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 
 	"github.com/briandowns/aion/config"
+	"github.com/briandowns/aion/controllers"
 	"github.com/briandowns/aion/database"
+	"github.com/briandowns/aion/dispatcher"
 
 	"github.com/codegangsta/negroni"
 	"github.com/goincremental/negroni-sessions"
@@ -97,7 +99,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	dispatcher := NewDispatcher(Conf)
+	dispatcher := dispatcher.NewDispatcher(Conf)
 
 	// launch the dispatcher
 	go dispatcher.Run()
@@ -124,33 +126,34 @@ func main() {
 	router := mux.NewRouter()
 
 	// Frontend Entry Point
-	router.HandleFunc(frontEnd, FrontendHandler()).Methods("GET")
+	router.HandleFunc(controllers.FrontEnd, controllers.FrontendHandler()).Methods("GET")
 
 	// Jobs Route
-	router.HandleFunc(JobsPath, JobsRouteHandler(ren, Conf)).Methods("GET")
+	router.HandleFunc(controllers.JobsPath, controllers.JobsRouteHandler(ren, Conf)).Methods("GET")
 
 	// Job By ID Route
-	router.HandleFunc(JobByID, JobByIDRouteHandler(ren, Conf)).Methods("GET")
+	router.HandleFunc(controllers.JobByID, controllers.JobByIDRouteHandler(ren, Conf)).Methods("GET")
 
 	// Job Delete By ID Route
-	router.HandleFunc(TaskByID, JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
+	router.HandleFunc(controllers.TaskByID, controllers.JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Jobs Route
-	router.HandleFunc(JobsPath, NewJobRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(controllers.JobsPath, controllers.NewJobRouteHandler(ren, dispatcher)).Methods("POST")
 
 	// Tasks Route
-	router.HandleFunc(TasksPath, TasksRouteHandler(ren, Conf)).Methods("GET")
+	router.HandleFunc(controllers.TasksPath, controllers.TasksRouteHandler(ren, Conf)).Methods("GET")
 
 	// Task By ID Route
-	router.HandleFunc(TaskByID, TaskByIDRouteHandler(ren, Conf)).Methods("GET")
+	router.HandleFunc(controllers.TaskByID, controllers.TaskByIDRouteHandler(ren, Conf)).Methods("GET")
 
 	// Task Delete By ID Route
-	router.HandleFunc(TaskByID, TaskDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
+	router.HandleFunc(controllers.TaskByID, controllers.TaskDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Tasks Route
-	router.HandleFunc(TasksPath, NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(controllers.TasksPath, controllers.NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
 
-	router.HandleFunc(APIStats, AdminAionAPIServerStats(statsMiddleware)).Methods("GET")
+	// API Statistics Route
+	router.HandleFunc(controllers.APIStats, controllers.AdminAionAPIServerStats(statsMiddleware)).Methods("GET")
 
 	n.Use(statsMiddleware)
 	n.UseHandler(router)
