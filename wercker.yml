@@ -18,7 +18,7 @@ services:
     # http://devcenter.wercker.com/docs/services/mongodb.html
     - id: mysql
       env:
-        MYSQL_ROOT_PASSWORD: aion
+        WERCKER_MYSQL_ROOT_PASSWORD: aion
         WERCKER_MYSQL_USERNAME: aion
         WERCKER_MYSQL_PASSWORD: aion
         WERCKER_MYSQL_HOST: $$HOST$$
