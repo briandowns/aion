@@ -27,6 +27,5 @@ test:
   pre:
     - go vet ./...
     - test -z "$(golint ./... | tee /dev/stderr)"
-    - test -z "$(gofmt -s -l . | tee /dev/stderr)"
   override:
     - go test -v -race -cover
