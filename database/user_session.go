@@ -1,10 +1,5 @@
 package database
 
-// DeleteResult deletes a task
-func (d *Database) DeleteResult(id int) {
-	d.Conn.Delete(&Result{ID: id})
-}
-
 // GetUserSessions gets all user sessions from the database
 func (d *Database) GetUserSessions() []UserSession {
 	var data []UserSession

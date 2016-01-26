@@ -133,11 +133,13 @@ func (t *Task) Send(db *Database) error {
 
 // User holds what's needs to represent a user
 type User struct {
-	ID           int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
-	Username     string `gorm:"column:username" json:"username"`
-	Password     string `gorm:"column:password" json:"password"`
-	PasswordSalt string `gorm:"column:password_salt" json:"password_salt"`
-	IsDisabled   bool   `gorm:"column:is_disabled" json:"is_disabled"`
+	ID        int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
+	Username  string `gorm:"column:username" json:"username"`
+	Password  string `gorm:"column:password" json:"password"`
+	FirstName string `gorm:"column:first_name" json:"first_name"`
+	LastName  string `gorm:"column:last_name" json:"last_name"`
+	Email     string `gorm:"column:email" json:"email"`
+	Enabled   bool   `gorm:"column:Enabled" json:"Enabled"`
 }
 
 // Permission holds what's needs to represent a permission
