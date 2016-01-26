@@ -133,11 +133,11 @@ func (t *Task) Send(db *Database) error {
 
 // User holds what's needs to represent a user
 type User struct {
-	ID        int       `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
-	Username  string    `gorm:"column:username" json:"username"`
-	Password  string    `gorm:"column:password" json:"password"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
+	ID           int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
+	Username     string `gorm:"column:username" json:"username"`
+	Password     string `gorm:"column:password" json:"password"`
+	PasswordSalt string `gorm:"column:password_salt" json:"password_salt"`
+	IsDisabled   bool   `gorm:"column:is_disabled" json:"is_disabled"`
 }
 
 // Permission holds what's needs to represent a permission
@@ -175,4 +175,12 @@ func (r *Result) Send(db *Database) error {
 	w.Stop()
 
 	return nil
+}
+
+// UserSession represents an active session for an Aion user
+type UserSession struct {
+	SessionKey   string    `gorm:"primary_key" gorm:"column:session_key" json:"session_key"`
+	UserID       int       `gorm:"column:user_id" json:"user_id"`
+	LoginTime    time.Time `gorm:"column:login_time" json:"login_time"`
+	LastSeenTime time.Time `gorm:"column:last_seen_time" json:"last_seen_time"`
 }
