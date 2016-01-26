@@ -1,5 +1,12 @@
 package database
 
+// AddResult adds a new result record to the database
+func (d *Database) AddResult(r Result) {
+	d.Conn.NewRecord(r)
+	d.Conn.Create(&r)
+	d.Conn.NewRecord(r)
+}
+
 // GetResults gets all permissions from the database
 func (d *Database) GetResults() []Permission {
 	var data []Permission

@@ -24,7 +24,6 @@ func (d *Database) Setup() {
 
 	d.Conn.CreateTable(&Result{})
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Result{})
-	d.Conn.Model(&Result{}).AddForeignKey("task_id", "tasks(id)", "RESTRICT", "RESTRICT")
 	d.Conn.Model(&Result{}).AddIndex("idx_start_end", "start_time", "end_time")
 
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(

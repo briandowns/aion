@@ -82,6 +82,7 @@ type Task struct {
 	CMD      string `gorm:"column:cmd" json:"cmd"`
 	Args     string `gorm:"column:args" json:"args"`
 	Schedule string `gorm:"column:schedule" json:"schedule"`
+	Func     func() `sql:"-" json:"-"`
 }
 
 // Add adds a task to the database
@@ -155,7 +156,8 @@ type Result struct {
 	TaskID    int       `gorm:"column:task_id" json:"task_id"`
 	StartTime time.Time `gorm:"column:start_time" json:"start_time"`
 	EndTime   time.Time `gorm:"column:end_time" json:"end_time"`
-	Result    string
+	Result    []byte    `sql:"type:longblob" gorm:"column:result" json:"result"`
+	Error     string    `gorm:"column:error" json:"error"`
 }
 
 // Send sends a new result to NSQ
@@ -175,6 +177,32 @@ func (r *Result) Send(db *Database) error {
 		return err
 	}
 	w.Stop()
+
+	return nil
+}
+
+// Add adds a task to the database
+func (r *Result) Add(db *Database) error {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	q, err := nsq.NewConsumer("new_result", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &r)
+		log.Printf("Got a message: %+v", r)
+		db.AddResult(*r)
+		wg.Done()
+		return nil
+	}))
+	err = q.ConnectToNSQD("192.168.99.100:4150")
+	if err != nil {
+		return err
+	}
+	wg.Wait()
 
 	return nil
 }

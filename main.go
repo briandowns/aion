@@ -100,12 +100,10 @@ func main() {
 	}
 
 	dispatcher := dispatcher.NewDispatcher(Conf)
-
-	// launch the dispatcher
 	go dispatcher.Run()
-
 	go watchForNewJobs()
 	go watchForNewTasks()
+	go watchForNewResults()
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
