@@ -95,6 +95,6 @@ You can get statistics from Aion simply by going to the `/api/v1/admin/api/stats
 
 ## Contributing
 
-* Put in an issue
+* Put in an issue with details or add one for a feature
 * Fork and create a branch
 * Submit a pull request
