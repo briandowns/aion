@@ -42,6 +42,7 @@ get: git hg
 	$(GOGET) -u -v github.com/nsqio/go-nsq
 	$(GOGET) -u -v github.com/mikespook/gorbac
 	$(GOGET) -u -v github.com/emicklei/forest
+	$(GOGET) -u -v github.com/StephanDollberg/go-json-rest-middleware-jwt
 
 # build all and place the binary
 install: clean get
