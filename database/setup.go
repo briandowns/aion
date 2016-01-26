@@ -11,6 +11,9 @@ func (d *Database) Setup() {
 	d.Conn.CreateTable(&Task{})
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Task{})
 
+	d.Conn.CreateTable(&Command{})
+	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Command{})
+
 	d.Conn.CreateTable(&User{})
 	d.Conn.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
 	d.Conn.Model(&User{}).AddForeignKey("permission_id", "permissions(id)", "RESTRICT", "RESTRICT")

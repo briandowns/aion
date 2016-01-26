@@ -53,12 +53,18 @@ dep: get
 # remove aion artifact(s)
 clean:
 	$(GOCLEAN) -n -i -x
-	rm -f $(GOPATH)/bin/aion
-	rm -rf bin/aion
+	rm -f $(GOPATH)/bin/aiond
+	rm -rf bin/aiond
+	rm -f client/aion
 
 # build the backend
-build: clean
-	$(GOBUILD) -v -race -o aion
+build: clean build-server build-client
+
+build-server:
+	$(GOBUILD) -v -race -o aiond
+	
+build-client: 
+	cd ./client; $(GOBUILD) -v -race -o aion
 
 # run the backend unit tests
 test:

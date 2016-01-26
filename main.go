@@ -104,6 +104,7 @@ func main() {
 	go watchForNewJobs()
 	go watchForNewTasks()
 	go watchForNewResults()
+	go watchForNewCommands()
 
 	// setup the renderer for returning our JSON
 	ren := render.New(render.Options{})
@@ -150,6 +151,18 @@ func main() {
 
 	// New Tasks Route
 	router.HandleFunc(controllers.TasksPath, controllers.NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
+
+	// Commands Route
+	router.HandleFunc(controllers.CommandsPath, controllers.CommandsRouteHandler(ren, Conf)).Methods("GET")
+
+	// Cmmand By ID Route
+	router.HandleFunc(controllers.CommandByID, controllers.CommandByIDRouteHandler(ren, Conf)).Methods("GET")
+
+	// Command Delete By ID Route
+	router.HandleFunc(controllers.CommandByID, controllers.CommandDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
+
+	// New Commands Route
+	router.HandleFunc(controllers.CommandsPath, controllers.NewCommandRouteHandler(ren, dispatcher)).Methods("POST")
 
 	// API Statistics Route
 	router.HandleFunc(controllers.APIStats, controllers.AdminAionAPIServerStats(statsMiddleware)).Methods("GET")

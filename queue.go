@@ -96,3 +96,27 @@ func watchForNewResults() error {
 
 	return nil
 }
+
+func watchForNewCommands() error {
+	q, err := nsq.NewConsumer("new_command", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+	var c *database.Command
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &c)
+
+		db, err := database.NewDatabase(Conf)
+		if err != nil {
+			log.Println(err)
+		}
+		db.AddCommand(*c)
+		return nil
+	}))
+	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -37,8 +37,8 @@ aion
 public/app/.tmp/
 
 # docker aion binaries
-docker/dev/aion
-docker/prod/aion
+docker/dev/aiond
+docker/prod/aiond
 
 # Aion CLI binary
-client/aion-cli
+client/aion

@@ -7,7 +7,9 @@
 `aion` is a job scheduling engine that utilizes cron syntax.  All tasks are executed in their own goroutine and their results are sent into a queue for another worker to pick-up and process.
 
 * Jobs - Jobs define tasks and potentially an outcome or expected result.
-* Tasks - Tasks define an action to be executed, a potential result, and the schedule it needs to be run.
+* Tasks - Tasks define an action to be executed and the schedule it needs to be run.
+* Commands - Commands represent the associated action for a task.  They have a command and arguments.
+* Users - Users are (will be) required to do any "write" actions in `aion`.
 
 ## Installation
 
@@ -17,17 +19,21 @@ $ go install github.com/briandowns/aion
 
 ## API
 
-| Method | Resource                | Description
-| :----- | :-------                | :----------
-| GET    | /api/v1/job             | Get a list of all jobs
-| POST   | /api/v1/job             | Add a new job
-| GET    | /api/v1/job/:id         | Get details for a given job ID
-| DELETE | /api/v1/job/:id         | Delete a job
-| GET    | /api/v1/task            | Get a list of all tasks
-| POST   | /api/v1/task            | Add a new task
-| GET    | /api/v1/task/:id        | Get details for a given task ID
-| DELETE | /api/v1/task/:id        | Delete a task
-| GET    | /api/v1/admin/api/stats | Get stats from the API
+| Method | Resource                   | Description
+| :----- | :-------                   | :----------
+| GET    | /api/v1/job                | Get a list of all jobs
+| POST   | /api/v1/job                | Add a new job
+| GET    | /api/v1/job/:id            | Get details for a given job ID
+| DELETE | /api/v1/job/:id            | Delete a job
+| GET    | /api/v1/task               | Get a list of all tasks
+| POST   | /api/v1/task               | Add a new task
+| GET    | /api/v1/task/:id           | Get details for a given task ID
+| DELETE | /api/v1/task/:id           | Delete a task
+| GET    | /api/v1/command            | Get a list of all command
+| POST   | /api/v1/command            | Add a new command
+| GET    | /api/v1/command/:id        | Get details for a given command ID
+| DELETE | /api/v1/command/:id        | Delete a command
+| GET    | /api/v1/admin/api/stats    | Get stats from the API 
 
 * more to come...
 
@@ -41,6 +47,26 @@ $ go install github.com/briandowns/aion
 $ cd $GOPATH/src/<username>/ && git clone git@github.com:briandowns/aion.git
 $ cd aion
 $ make dep
+```
+
+## Build
+
+Compile both the server and the client.  The binaries will be placed in the folder their source is found.  The resulting binaries will be named `aiond` for the server and `aion` for the client.
+
+```
+$ make build
+```
+
+### Server
+
+```
+$ make build-server
+```
+
+### Client
+
+```
+$ make build-client
 ```
 
 ## Statistics

@@ -214,3 +214,59 @@ type UserSession struct {
 	LoginTime    time.Time `gorm:"column:login_time" json:"login_time"`
 	LastSeenTime time.Time `gorm:"column:last_seen_time" json:"last_seen_time"`
 }
+
+// Command represents
+type Command struct {
+	ID    int    `sql:"auto_increment" gorm:"column:id" gorm:"primary_key" json:"id"`
+	CMD   string `gorm:"column:cmd" json:"cmd"`
+	Args  string `gorm:"column:args" json:"args"`
+	Path  string `gorm:"column:path" json:"path"`
+	Owner string `gorm:"column:owner" json:"owner"`
+}
+
+// Add adds a command to the database
+func (c *Command) Add(db *Database) error {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	q, err := nsq.NewConsumer("new_command", "add", nsqConfig)
+	if err != nil {
+		return err
+	}
+
+	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+		json.Unmarshal(message.Body, &c)
+		log.Printf("Got a message: %+v", c)
+		db.AddCommand(*c)
+		wg.Done()
+		return nil
+	}))
+	err = q.ConnectToNSQD("192.168.99.100:4150")
+	if err != nil {
+		return err
+	}
+	wg.Wait()
+
+	return nil
+}
+
+// Send sends a new command to NSQ
+func (c *Command) Send(db *Database) error {
+	w, err := nsq.NewProducer(fmt.Sprintf("%s:4150", db.Conf.QueueHost), nsqConfig)
+	if err != nil {
+		return nil
+	}
+
+	s, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	err = w.Publish("new_command", s)
+	if err != nil {
+		return err
+	}
+	w.Stop()
+
+	return nil
+}

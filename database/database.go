@@ -17,6 +17,14 @@ type DataAccess interface {
 	Delete(d *Database, id int)
 }
 
+// Resource is an interface used for any DB record
+type Resource interface {
+	Add()
+	Get()
+	GetByID()
+	Delete()
+}
+
 // Database holds db conf and a connection
 type Database struct {
 	Conf *config.Config
