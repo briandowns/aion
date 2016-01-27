@@ -1,0 +1,17 @@
+language: go
+go:
+  - 1.5.3
+env:
+  - GOARCH: amd64
+  - GOARCH: 386
+before_script:
+  - go vet ./...
+script:
+  - go get -t -v ./...
+  - go test -v
+notifications:
+  email:
+    recipients:
+      - brian.downs@gmail.com
+    on_success: change
+    on_failure: always
