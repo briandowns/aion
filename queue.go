@@ -7,7 +7,6 @@ import (
 
 	"github.com/briandowns/aion/database"
 
-	//"github.com/bitly/go-nsq"
 	"github.com/nsqio/go-nsq"
 )
 
