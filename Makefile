@@ -43,6 +43,8 @@ get: git hg
 	$(GOGET) -u -v github.com/mikespook/gorbac
 	$(GOGET) -u -v github.com/emicklei/forest
 	$(GOGET) -u -v github.com/thoas/stats
+	$(GOGET) -u -v github.com/fatih/flags
+	$(GOGET) -u -v github.com/mitchellh/cli
 	$(GOGET) -u -v github.com/StephanDollberg/go-json-rest-middleware-jwt
 
 # build all and place the binary
