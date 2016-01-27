@@ -87,13 +87,13 @@ func TaskByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerF
 		if t := db.GetTaskByID(taskID); len(t) > 0 {
 			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": t})
 		} else {
-			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": ErrNoTasksFound.Error()})
+			ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"task": ErrNoTasksFound.Error()})
 		}
 	}
 }
 
 // TaskDeleteByIDRouteHandler deletes the task data for the given ID
-func TaskDeleteByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerFunc {
+func TaskDeleteByIDRouteHandler(ren *render.Render, conf *config.Config, dispatch *dispatcher.Dispatcher) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		tid := vars["id"]
@@ -107,7 +107,13 @@ func TaskDeleteByIDRouteHandler(ren *render.Render, conf *config.Config) http.Ha
 		}
 		defer db.Conn.Close()
 
-		db.DeleteTask(taskID)
+		task := db.GetTaskByID(taskID)
+		if len(task) > 0 {
+			dispatch.RemoveTaskChan <- task[0]	
+			db.DeleteTask(taskID)
+		} else {
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
+		}
 
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
 	}

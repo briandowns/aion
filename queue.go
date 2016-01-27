@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/database"
 	"github.com/briandowns/aion/dispatcher"
 
@@ -51,7 +50,7 @@ func watchForNewJobs() error {
 	return nil
 }
 
-func watchForNewTasks(conf *config.Conf) error {
+func watchForNewTasks() error {
 	q, err := nsq.NewConsumer("new_task", "add", nsqConfig)
 	if err != nil {
 		return err
@@ -65,7 +64,7 @@ func watchForNewTasks(conf *config.Conf) error {
 			log.Println(err)
 		}
 		db.AddTask(*t)
-		dispatcher.NewDispatcher(conf).TaskProcChan <- *t
+		dispatcher.NewDispatcher(Conf).TaskProcChan <- *t
 		return nil
 	}))
 	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))

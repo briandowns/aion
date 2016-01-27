@@ -17,21 +17,24 @@ type Sender interface {
 
 // Dispatcher holds the values that comprise the Aion dispatcher
 type Dispatcher struct {
-	Conf         *config.Config
-	cron         *cron.Cron
-	ResultChan   chan database.Result
-	JobProcChan  chan database.Job
-	TaskProcChan chan database.Task
-	SenderChan   chan Sender
+	Conf           *config.Config
+	cron           *cron.Cron
+	ResultChan     chan database.Result
+	JobProcChan    chan database.Job
+	TaskProcChan   chan database.Task
+	RemoveTaskChan chan database.Task
+	SenderChan     chan Sender
 }
 
 // NewDispatcher creates a new refence of type Dispatcher
 func NewDispatcher(conf *config.Config) *Dispatcher {
 	return &Dispatcher{
-		Conf:       conf,
-		cron:       cron.New(),
-		ResultChan: make(chan database.Result),
-		SenderChan: make(chan Sender),
+		Conf:           conf,
+		cron:           cron.New(),
+		ResultChan:     make(chan database.Result),
+		SenderChan:     make(chan Sender),
+		TaskProcChan:   make(chan database.Task),
+		RemoveTaskChan: make(chan database.Task),
 	}
 }
 
@@ -95,6 +98,13 @@ func (d *Dispatcher) Run() error {
 			}
 		case task := <-d.TaskProcChan:
 			d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task))
+		case task := <-d.RemoveTaskChan:
+			entries := d.cron.Entries()
+			//a = append(a[:i], a[i+1:]...)
+			log.Println(task)
+			for i, t := range entries {
+				log.Println(i, " ", t)
+			}
 		}
 	}
 }
