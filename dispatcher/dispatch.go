@@ -33,7 +33,6 @@ func NewDispatcher(conf *config.Config) *Dispatcher {
 		cron:           cron.New(),
 		ResultChan:     make(chan database.Result),
 		SenderChan:     make(chan Sender),
-		JobProcChan:    make(chan database.Job),
 		TaskProcChan:   make(chan database.Task),
 		RemoveTaskChan: make(chan database.Task),
 	}
@@ -97,10 +96,6 @@ func (d *Dispatcher) Run() error {
 			if err := data.Send(db); err != nil {
 				log.Println(err)
 			}
-
-		// listen for new tasks and add them to the scheduler
-		case job := <-d.JobProcChan:
-			//
 
 		// listen for new tasks and add them to the scheduler
 		case task := <-d.TaskProcChan:
