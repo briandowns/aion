@@ -24,7 +24,7 @@ all : build
 
 # download 3rd party dependencies
 get: git hg
-	$(GOGET) -u -v code.google.com/p/go-uuid/uuid
+	$(GOGET) -u -v github.com/pborman/uuid
 	$(GOGET) -u -v github.com/codegangsta/negroni
 	$(GOGET) -u -v github.com/goincremental/negroni-sessions
 	$(GOGET) -u -v github.com/gorilla/mux
