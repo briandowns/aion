@@ -103,7 +103,7 @@ func (d *Dispatcher) Run() error {
 			//a = append(a[:i], a[i+1:]...)
 			log.Println(task)
 			for i, t := range entries {
-				log.Println(i, " ", t)
+				log.Printf("%d: %+v\n", i, t)
 			}
 		}
 	}

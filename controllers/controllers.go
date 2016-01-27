@@ -54,6 +54,9 @@ var (
 	// ErrNoCommandsFound is given when a command isn't found
 	ErrNoCommandsFound = errors.New("no commands found")
 
+	// ErrNoEntryFound is given when an entry isn't found in the database
+	ErrNoEntryFound = errors.New("no entry found")
+
 	// ErrMissingNameField is given when the name field in a task is missing
 	ErrMissingNameField = errors.New("missing or empty 'name' field")
 

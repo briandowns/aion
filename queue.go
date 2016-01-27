@@ -64,7 +64,9 @@ func watchForNewTasks() error {
 			log.Println(err)
 		}
 		db.AddTask(*t)
-		dispatcher.NewDispatcher(Conf).TaskProcChan <- *t
+		log.Print("made it this far...\n")
+		dispatch := dispatcher.NewDispatcher(Conf)
+		dispatch.TaskProcChan <- *t
 		return nil
 	}))
 	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))

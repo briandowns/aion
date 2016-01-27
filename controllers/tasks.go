@@ -87,7 +87,7 @@ func TaskByIDRouteHandler(ren *render.Render, conf *config.Config) http.HandlerF
 		if t := db.GetTaskByID(taskID); len(t) > 0 {
 			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": t})
 		} else {
-			ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"task": ErrNoTasksFound.Error()})
+			ren.JSON(w, http.StatusBadRequest, map[string]interface{}{"error": ErrNoTasksFound.Error()})
 		}
 	}
 }
@@ -112,9 +112,9 @@ func TaskDeleteByIDRouteHandler(ren *render.Render, conf *config.Config, dispatc
 			dispatch.RemoveTaskChan <- task[0]	
 			db.DeleteTask(taskID)
 		} else {
-			ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
+			ren.JSON(w, http.StatusOK, map[string]interface{}{"error": ErrNoEntryFound.Error()})
+			return
 		}
-
 		ren.JSON(w, http.StatusOK, map[string]interface{}{"task": taskID})
 	}
 }
