@@ -38,6 +38,7 @@ func watchForNewJobs() error {
 		if err != nil {
 			log.Println(err)
 		}
+		defer db.Conn.Close()
 		db.AddJob(*j)
 		return nil
 	}))
@@ -62,6 +63,7 @@ func watchForNewTasks() error {
 		if err != nil {
 			log.Println(err)
 		}
+		defer db.Conn.Close()
 		db.AddTask(*t)
 		return nil
 	}))
@@ -86,6 +88,7 @@ func watchForNewResults() error {
 		if err != nil {
 			log.Println(err)
 		}
+		defer db.Conn.Close()
 		db.AddResult(*r)
 		return nil
 	}))
