@@ -11,6 +11,6 @@
 
 ## Examples
 
-* `aion-cli show config`
-* `aion-cli show jobs`
-* `aion-cli show tasks`
+* `aion show config`
+* `aion show jobs`
+* `aion show tasks`
