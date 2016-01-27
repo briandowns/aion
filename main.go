@@ -99,10 +99,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	dispatcher := dispatcher.NewDispatcher(Conf)
-	go dispatcher.Run()
+	dispatch := dispatcher.NewDispatcher(Conf)
+	go dispatch.Run()
 	go watchForNewJobs()
-	go watchForNewTasks()
+	go watchForNewTasks(Conf)
 	go watchForNewResults()
 	go watchForNewCommands()
 
@@ -138,7 +138,7 @@ func main() {
 	router.HandleFunc(controllers.JobByID, controllers.JobDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Jobs Route
-	router.HandleFunc(controllers.JobsPath, controllers.NewJobRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(controllers.JobsPath, controllers.NewJobRouteHandler(ren, Disp)).Methods("POST")
 
 	// Tasks Route
 	router.HandleFunc(controllers.TasksPath, controllers.TasksRouteHandler(ren, Conf)).Methods("GET")
@@ -150,7 +150,7 @@ func main() {
 	router.HandleFunc(controllers.TaskByID, controllers.TaskDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Tasks Route
-	router.HandleFunc(controllers.TasksPath, controllers.NewTaskRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(controllers.TasksPath, controllers.NewTaskRouteHandler(ren, Disp)).Methods("POST")
 
 	// Commands Route
 	router.HandleFunc(controllers.CommandsPath, controllers.CommandsRouteHandler(ren, Conf)).Methods("GET")
@@ -162,7 +162,7 @@ func main() {
 	router.HandleFunc(controllers.CommandByID, controllers.CommandDeleteByIDRouteHandler(ren, Conf)).Methods("DELETE")
 
 	// New Commands Route
-	router.HandleFunc(controllers.CommandsPath, controllers.NewCommandRouteHandler(ren, dispatcher)).Methods("POST")
+	router.HandleFunc(controllers.CommandsPath, controllers.NewCommandRouteHandler(ren, Disp)).Methods("POST")
 
 	// API Statistics Route
 	router.HandleFunc(controllers.APIStats, controllers.AdminAionAPIServerStats(statsMiddleware)).Methods("GET")

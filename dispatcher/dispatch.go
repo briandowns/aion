@@ -93,6 +93,8 @@ func (d *Dispatcher) Run() error {
 			if err := data.Send(db); err != nil {
 				log.Println(err)
 			}
+		case task := <-d.TaskProcChan:
+			d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task))
 		}
 	}
 }
