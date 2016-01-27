@@ -59,4 +59,4 @@ aion:
     - ./:/opt/aion:ro
   working_dir: /opt/aion
   ports:
-    - "9898"
+    - "9898:9898"
