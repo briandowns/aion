@@ -99,8 +99,9 @@ func (d *Dispatcher) Run() error {
 
 		// listen for new tasks and add them to the scheduler
 		case task := <-d.TaskProcChan:
-			d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task))
-
+			if err := d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task)); err != nil {
+				log.Println(err)
+			}
 		// remove tasks from the scheduler
 		case task := <-d.RemoveTaskChan:
 			entries := d.cron.Entries()

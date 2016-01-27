@@ -8,8 +8,6 @@ import (
 	"os"
 	"os/signal"
 
-	"code.google.com/p/go-uuid/uuid"
-
 	"github.com/briandowns/aion/config"
 	"github.com/briandowns/aion/controllers"
 	"github.com/briandowns/aion/database"
@@ -19,6 +17,7 @@ import (
 	"github.com/goincremental/negroni-sessions"
 	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/gorilla/mux"
+	"github.com/pborman/uuid"
 	"github.com/thoas/stats"
 	"github.com/unrolled/render"
 )
