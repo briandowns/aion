@@ -1,9 +1,12 @@
 language: go
+sudo: required
 go:
   - 1.5.3
 env:
-  - GOARCH: amd64
-  - GOARCH: 386
+  - GOOS=darwin GOARCH=amd64
+  - GOOS=linux GOARCH=386
+  - GOOS=linux GOARCH=amd64 DOCKER_VERSION=1.9.1
+  - GOOS=linux GOARCH=amd64 DOCKER_VERSION=1.10
 before_script:
   - go vet ./...
 script:
