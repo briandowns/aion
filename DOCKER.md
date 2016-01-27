@@ -12,7 +12,7 @@ First run you need to setup the db table structure for dev.
 
 After the db is setup you can run the script without args to start the bin
 
-``bash
+```bash
 ./aion_start
 ```
 
