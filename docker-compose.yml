@@ -35,6 +35,14 @@ nsqd:
     - "4150:4150"
     - "4151:4151"
 
+make:
+  image: golang:1.5-wheezy
+  volumes: 
+    - ./:/go/src/github.com/aion/aion
+  working_dir: /go/src/github.com/aion/aion
+  entrypoint: /usr/bin/make
+  command: dep build
+
 aion:
   build: docker
   links:
