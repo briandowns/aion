@@ -27,7 +27,16 @@ Ports are dynamically assigned use docker ps to find mapped port for 9898.
 The container has curl, mysql-client and netcat-openbsd installed for testing purposes
 
 ```bash
-# example
+# nsq example
 docker-compose run aion curl -d "hello world" http://nsqd:4151/put?topic=test
 OK
+# mysql example
+docker-compose run aion mysql -u aion --password=aion -h db -e "show databases;"
+Warning: Using a password on the command line interface can be insecure.
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| aion               |
++--------------------+
 ```
