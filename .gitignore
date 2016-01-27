@@ -33,6 +33,9 @@ aion
 # log files
 *.log
 
+# dev placement of binary
+aiond
+
 # frontend tmp directory
 public/app/.tmp/
 
