@@ -63,6 +63,7 @@ func NewTaskRouteHandler(ren *render.Render, dispatcher *dispatcher.Dispatcher) 
 		}
 
 		dispatcher.SenderChan <- &nt
+		dispatcher.TaskProcChan <- nt
 		ren.JSON(w, http.StatusOK, map[string]database.Task{"task": nt})
 	}
 }

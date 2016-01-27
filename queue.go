@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/briandowns/aion/database"
-	"github.com/briandowns/aion/dispatcher"
 
 	"github.com/bitly/go-nsq"
 )
@@ -64,9 +63,6 @@ func watchForNewTasks() error {
 			log.Println(err)
 		}
 		db.AddTask(*t)
-		log.Print("made it this far...\n")
-		dispatch := dispatcher.NewDispatcher(Conf)
-		dispatch.TaskProcChan <- *t
 		return nil
 	}))
 	err = q.ConnectToNSQD(fmt.Sprintf("%s:4150", queueHostFlag))
