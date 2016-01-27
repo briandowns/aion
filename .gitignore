@@ -29,6 +29,7 @@ _testmain.go
 
 # binary 
 aion
+aiond
 
 # log files
 *.log
