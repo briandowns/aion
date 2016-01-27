@@ -41,7 +41,7 @@ var (
 	UserByID = UserPath + "/{id}"
 
 	// APIStats is hte path to get API specific data
-	APIStats = UserPath + "api/stats"
+	APIStats = AdminPath + "api/stats"
 )
 
 var (
