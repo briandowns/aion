@@ -97,7 +97,9 @@ func (d *Dispatcher) Run() error {
 				log.Println(err)
 			}
 		case task := <-d.TaskProcChan:
-			d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task))
+			if err := d.cron.AddFunc(task.Schedule, d.taskFuncFactory(&task)); err != nil {
+				log.Println(err)
+			}
 		case task := <-d.RemoveTaskChan:
 			entries := d.cron.Entries()
 			//a = append(a[:i], a[i+1:]...)
