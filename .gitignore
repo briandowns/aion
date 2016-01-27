@@ -42,3 +42,6 @@ docker/prod/aiond
 
 # Aion CLI binary
 client/aion
+
+# Swap files
+*.swp

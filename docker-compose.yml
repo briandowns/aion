@@ -36,7 +36,7 @@ nsqd:
     - "4151:4151"
 
 aion:
-  image: ubuntu:vivid
+  build: docker
   links:
     - db
     - nsqd
